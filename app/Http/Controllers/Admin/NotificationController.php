@@ -101,20 +101,21 @@ class NotificationController extends Controller
             $customer = User::where('id', $userId)->first();
             // dd($customer);
 
-            if ($customer && $customer->fcm) {
-                // dd($customer->fcm);
+            if ($customer && $customer->fcmtoken) {
+                // dd($customer->fcmtoken);
                 $data = [
                     'id' => $notification->id,
                     'type' => 'admin_notification', // optional type field
                     'title' => $request->title,
                     'body' => $request->description,
+                    "screen_name" => "Notifications"
                 ];
 
                 // dd($data);
 
                 // Dispatch the notification job
                 dispatch(new JobNotification(
-                    $customer->fcm,
+                    $customer->fcmtoken,
                     $request->title,
                     $request->description,
                     $data

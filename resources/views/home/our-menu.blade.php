@@ -15,49 +15,20 @@
             align-items: center;
         }
 
-        .about-us-az-1 {
-            height: 285px;
-            object-fit: cover;
-        }
-
-
-        .about-us-az-2 {
-            height: 205px;
-            object-fit: cover;
-        }
+        .about-us-az-1 { height: 285px; object-fit: cover; }
+        .about-us-az-2 { height: 205px; object-fit: cover; }
 
         @media (max-width: 767px) {
-            .about-us-az-1 {
-                height: 225px;
-            }
-
-            .about-us-az-2 {
-                height: 145px;
-            }
+            .about-us-az-1 { height: 225px; }
+            .about-us-az-2 { height: 145px; }
         }
 
-        .accordion-button {
-            font-weight: 500;
-        }
+        .accordion-button { font-weight: 500; }
+        .accordion-button:not(.collapsed) { background-color: #f8f9fa; color: #212529; }
+        .accordion-button:focus { box-shadow: none; border-color: transparent; }
 
-        .accordion-button:not(.collapsed) {
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-
-        .accordion-button:focus {
-            box-shadow: none;
-            border-color: transparent;
-        }
-
-        .menu-category-tabs {
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .menu-category-tabs .nav-item {
-            margin-bottom: -2px;
-        }
-
+        .menu-category-tabs { border-bottom: 2px solid #dee2e6; }
+        .menu-category-tabs .nav-item { margin-bottom: -2px; }
         .menu-category-tabs .nav-link {
             color: #6c757d;
             border: none;
@@ -68,13 +39,7 @@
             font-size: 14px;
             transition: all 0.3s;
         }
-
-        .menu-category-tabs .nav-link:hover {
-            color: #dc3545;
-            border-bottom-color: #dc3545;
-            background-color: transparent;
-        }
-
+        .menu-category-tabs .nav-link:hover,
         .menu-category-tabs .nav-link.active {
             color: #dc3545;
             border-bottom-color: #dc3545;
@@ -85,66 +50,20 @@
             transition: transform 0.3s, box-shadow 0.3s;
             cursor: pointer;
         }
-
         .popular-item:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 768px) {
-            .menu-category-tabs {
-                overflow-x: auto;
-                display: flex;
-                flex-wrap: nowrap;
-            }
-
-            .menu-category-tabs .nav-item {
-                flex-shrink: 0;
-            }
-
-            .menu-category-tabs .nav-link {
-                padding: 10px 15px;
-                font-size: 12px;
-            }
+            .menu-category-tabs { overflow-x: auto; display: flex; flex-wrap: nowrap; }
+            .menu-category-tabs .nav-item { flex-shrink: 0; }
+            .menu-category-tabs .nav-link { padding: 10px 15px; font-size: 12px; }
         }
 
-        /* Owl Carousel Card Styling */
-        .owl-carousel .item {
-            padding: 10px;
-            width: 100%;
-        }
-
-        .owl-carousel .popular-item {
-            height: 100%;
-            min-height: 350px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .owl-carousel .owl-item {
-            display: flex;
-        }
-
-        .owl-carousel .owl-stage {
-            display: flex;
-        }
-
-        .owl-carousel .owl-item .item {
-            height: 100%;
-            width: 100%;
-        }
-
-        /* Sliding Tabs for Menu */
-        .menu-tabs-wrapper {
-            position: relative;
-        }
-
-        .menu-tabs-container {
-            overflow: hidden;
-            position: relative;
-        }
-
+        /* Sliding Tabs */
+        .menu-tabs-wrapper { position: relative; }
+        .menu-tabs-container { overflow: hidden; position: relative; }
         .menu-category-tabs {
             overflow-x: auto;
             scroll-behavior: smooth;
@@ -154,16 +73,8 @@
             gap: 10px;
             flex-wrap: nowrap !important;
         }
-
-        .menu-category-tabs .nav-item {
-            flex-shrink: 0 !important;
-            display: inline-block;
-        }
-
-        .menu-category-tabs .nav-link {
-            white-space: nowrap !important;
-            flex-shrink: 0;
-        }
+        .menu-category-tabs .nav-item { flex-shrink: 0 !important; display: inline-block; }
+        .menu-category-tabs .nav-link { white-space: nowrap !important; flex-shrink: 0; }
 
         .menu-tabs-container .tab-scroll-btn {
             position: absolute;
@@ -181,47 +92,26 @@
             cursor: pointer;
             z-index: 10;
             transition: all 0.3s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
-
-        .menu-tabs-container .tab-scroll-btn:hover {
-            background: #dc3545;
-            color: white;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .menu-tabs-container .tab-scroll-btn.left {
-            left: -15px;
-        }
-
-        .menu-tabs-container .tab-scroll-btn.right {
-            right: -15px;
-        }
-
-        .menu-tabs-container .tab-scroll-btn.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
+        .menu-tabs-container .tab-scroll-btn:hover { background: #dc3545; color: white; transform: translateY(-50%) scale(1.1); }
+        .menu-tabs-container .tab-scroll-btn.left  { left: -15px; }
+        .menu-tabs-container .tab-scroll-btn.right { right: -15px; }
+        .menu-tabs-container .tab-scroll-btn.disabled { opacity: 0.3; cursor: not-allowed; }
         .menu-tabs-container .tab-scroll-btn.disabled:hover {
             transform: translateY(-50%) scale(1);
             background: white;
             color: #dc3545;
         }
+        .menu-category-tabs::-webkit-scrollbar { display: none; }
+        .menu-category-tabs { -ms-overflow-style: none; scrollbar-width: none; }
+        .menu-category-tabs .nav-link { white-space: nowrap; padding: 12px 25px !important; }
 
-        .menu-category-tabs::-webkit-scrollbar {
-            display: none;
-        }
+        /* ✅ Google Places autocomplete z-index fix for modals */
+        .pac-container { z-index: 99999 !important; }
 
-        .menu-category-tabs {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .menu-category-tabs .nav-link {
-            white-space: nowrap;
-            padding: 12px 25px !important;
-        }
+        .prodPrice { font-weight: bold; font-size: 1.2rem; }
+        .price-display { font-size: 1.2rem; font-weight: bold; }
     </style>
 
     <div class="modal fade" id="videoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -232,310 +122,488 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- 16:9 aspect ratio -->
                     <div class="ratio ratio-16x9">
-                        <iframe class="embed-responsive-item" src="" id="video" allowfullscreen
-                            allowscriptaccess="always" allow="autoplay"></iframe>
+                        <iframe class="embed-responsive-item" src="" id="video"
+                            allowfullscreen allowscriptaccess="always" allow="autoplay"></iframe>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Reservation End -->
 
-    <!-- Menu Start -->
-    <!-- <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-    <div class="container">
-        <div class="text-center">
-            <h5 class="section-title ff-secondary text-center text-primary fw-normal">Our Menu's</h5>
-            <h3 class="mb-5 col-sm-8 mx-auto">Featured Items</h3>
-        </div> -->
+    {{-- =====================================================================
+         ✅ CENTRALIZED DISCOUNT HELPER (same logic as example code)
+         =====================================================================
+         DB structure:
+           product.featured_action  = 'decrease'
+           product.featured_method  = 'percentage' | 'amount'
+           product.featured_amount  = numeric value
+           product.original_price   = base price (for simple products)
+           product.price            = discounted price (for simple products)
+           variant.original_price   = base price (£18, £20)
+           variant.price            = discounted/current price (£17, £19)
+    --}}
+    @php
+    function calcDiscount($product) {
+        $hasVariants = $product->variants && $product->variants->count() > 0;
 
-    <!-- Image Popup -->
-    <!-- <div id="imagePopup" class="popup">
-            <div class="popup-content">
-                <span class="close" id="closeImagePopup">&times;</span>
-                <img id="popupImage" alt="Image">
-            </div>
-        </div>
-        <div class="owl-carousel gallery-carousel">
-            @foreach ($menuGalleries as $menuGallery)
-{{-- <a class="col-sm-4 col-6 gallery-item" href="{{ asset($menuGallery->image) }}"
-                data-lg-size="1600-2400"> --}}
-                <a class="col-sm-4 col-6 gallery-item" data-lg-size="1600-2400">
-                    <div class="bg-transparent border rounded p-4">
-                        <img class="w-100 clickable-image" src="{{ asset($menuGallery->image) }}" alt="Gallery Image" />
+        // Pick display variant — prefer 'regular', else first with price > 0
+        $displayVariant = null;
+        if ($hasVariants) {
+            $displayVariant = $product->variants->where('size', 'regular')->first();
+            if (!$displayVariant || $displayVariant->price <= 0) {
+                $displayVariant = $product->variants->where('price', '>', 0)->first();
+            }
+            if (!$displayVariant) {
+                $displayVariant = $product->variants->first();
+            }
+        }
+
+        // Prices
+        if ($hasVariants && $displayVariant) {
+            $originalPrice = floatval($displayVariant->original_price ?? $displayVariant->price);
+            $finalPrice    = floatval($displayVariant->price);
+        } else {
+            $originalPrice = floatval($product->original_price ?? $product->price);
+            $finalPrice    = floatval($product->price);
+        }
+
+        // Discount badge
+        $hasDiscount     = false;
+        $badgeText       = '';
+
+        if (
+            $product->featured_action == 'decrease' &&
+            $originalPrice > $finalPrice &&
+            $originalPrice > 0
+        ) {
+            $hasDiscount = true;
+            if ($product->featured_method == 'percentage' && $product->featured_amount > 0) {
+                $badgeText = (int) $product->featured_amount . '% OFF';
+            } else {
+                $badgeText = '£' . number_format($product->featured_amount, 0) . ' OFF';
+            }
+        }
+
+        return [
+            'hasVariants'    => $hasVariants,
+            'displayVariant' => $displayVariant,
+            'originalPrice'  => $originalPrice,
+            'finalPrice'     => $finalPrice,
+            'hasDiscount'    => $hasDiscount,
+            'badgeText'      => $badgeText,
+            'comp'           => optional($product->complementaryProductSingle),
+        ];
+    }
+    @endphp
+
+    {{-- ================================================================
+         FULL MENU
+         ================================================================ --}}
+    <div class="container-xxl py-5">
+        <div class="container">
+
+            <div class="wow fadeInUp mb-2" data-wow-delay="0.1s">
+                <div id="menuContainer"
+                    class="d-flex flex-column align-items-center justify-content-center flex-wrap">
+                    <div class="text-center">
+                        <h3 class="m-0">
+                            @if (!empty($searchTerm))
+                                Search Results for "{{ $searchTerm }}"
+                            @else
+                                Explore Our Complete Menu
+                            @endif
+                        </h3>
                     </div>
-                </a>
-@endforeach
-        </div>
-        <div class="text-center">
-            <a class="btn btn-primary py-3 px-5 mt-5" href="{{ route('get-menu-picture') }}">View All</a>
-        </div>
-    </div>
-</div> -->
 
-
-<!-- Full Menu Start -->
-<div class="container-xxl py-5">
-    <div class="container">
-        <div class="wow fadeInUp mb-2" data-wow-delay="0.1s">
-            <div id="menuContainer" class="d-flex flex-column align-items-center justify-content-center flex-wrap">
-                <div class="text-center">
-                    {{-- @if ($timeSlots->isNotEmpty())
-                        <h5 class="section-title ff-secondary fw-normal m-0">
-                            {{ \Carbon\Carbon::parse($timeSlots->first()->start_pickup_time)->format('g:i A') }} –
-                            {{ \Carbon\Carbon::parse($timeSlots->first()->end_pickup_time)->format('g:i A') }}
-                        </h5>
-                    @endif --}}
-                    <h3 class="m-0">
-                        @if (!empty($searchTerm))
-                            Search Results for "{{ $searchTerm }}"
-                        @else
-                            Explore Our Complete Menu
-                        @endif
-                    </h3>
+                    @if (empty($searchTerm) && $menuCategories && $menuCategories->isNotEmpty())
+                        <div class="w-100 d-flex align-items-center justify-content-end gap-2">
+                            <button class="tab-scroll-btn left" onclick="scrollTabs('left')">
+                                <span class="ri-arrow-left-line"></span>
+                            </button>
+                            <button class="tab-scroll-btn right" onclick="scrollTabs('right')">
+                                <span class="ri-arrow-right-line"></span>
+                            </button>
+                        </div>
+                    @endif
                 </div>
-                
-                @if (empty($searchTerm) && $menuCategories && $menuCategories->isNotEmpty())
-                    <div class="w-100 d-flex align-items-center justify-content-end gap-2">
-                        <button class="tab-scroll-btn left" onclick="scrollTabs('left')">
-                            <span class="ri-arrow-left-line"></span>
-                        </button>
-                        <button class="tab-scroll-btn right" onclick="scrollTabs('right')">
-                            <span class="ri-arrow-right-line"></span>
-                        </button>
-                    </div>
-                @endif
             </div>
-        </div>
 
-        {{-- SEARCH RESULTS --}}
-        @if (!empty($searchTerm))
-            @if ($filteredProducts->isEmpty())
-                <div class="alert alert-warning text-center">
-                    <h5>No items found for "{{ $searchTerm }}"</h5>
-                    <p class="mb-0">Please try a different search term.</p>
-                </div>
-            @else
-                <div class="row g-4">
-                    @foreach ($filteredProducts as $prod)
+            {{-- ============================================================
+                 SEARCH RESULTS
+                 ============================================================ --}}
+            @if (!empty($searchTerm))
+
+                @if ($filteredProducts->isEmpty())
+                    <div class="alert alert-warning text-center">
+                        <h5>No items found for "{{ $searchTerm }}"</h5>
+                        <p class="mb-0">Please try a different search term.</p>
+                    </div>
+                @else
+                    <div class="row g-4">
+                        @foreach ($filteredProducts as $prod)
+                        @php $d = calcDiscount($prod); @endphp
                         <div class="col-xl-3 col-lg-4 col-md-6">
-                            <a class="popular-item bg-transparent border rounded p-4 d-block text-start h-100"
+                            <a class="popular-item bg-transparent border rounded p-4 d-block text-center h-100 position-relative"
                                 href="#" data-bs-toggle="modal"
                                 data-bs-target="#menuModalFull-{{ $prod->id }}">
+
+                                {{-- ✅ Discount badge on card --}}
+                                @if($d['hasDiscount'])
+                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                        {{ $d['badgeText'] }}
+                                    </span>
+                                @endif
+
+                                {{-- Product image --}}
                                 <div class="text-center mb-3">
-                                    <img class="img-fluid" 
-                                         src="{{ asset($prod->image) }}" 
-                                         style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px;">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <img class="img-fluid rounded"
+                                             src="{{ asset($prod->image) }}"
+                                             alt="{{ $prod->name }}"
+                                             style="width:130px;height:130px;object-fit:cover;">
+
+                                        {{-- ✅ Complementary product on card --}}
+                                        @if(optional($d['comp'])->complementary)
+                                            <span style="font-size:22px;font-weight:bold;color:#000;">+</span>
+                                            <div class="text-center">
+                                                <img class="img-fluid rounded"
+                                                     src="{{ asset($d['comp']->complementary->image) }}"
+                                                     alt="{{ $d['comp']->complementary->name }}"
+                                                     style="width:100px;height:100px;object-fit:cover;">
+                                                <br>
+                                                <span class="badge bg-success m-2">BUY 1 GET 1 FREE</span>
+                                                <p class="mb-0 small mt-1 fw-medium text-dark">{{ $d['comp']->complementary->name }}</p>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
+
+                                {{-- Name + Price --}}
                                 <div class="mb-2">
                                     <h5 class="mb-1 main-heading text-center">{{ $prod->name }}</h5>
                                     <p class="text-center mb-2">
-                                        @if ($prod->variants && $prod->variants->isNotEmpty())
-                                            <span class="badge bg-primary">
-                                                From £{{ $prod->default_price }}
-                                            </span>
-                                        @else
-                                            <span class="badge bg-primary">
-                                                £{{ $prod->price }}
+                                        @if($d['hasDiscount'])
+                                            <span class="text-muted text-decoration-line-through small d-block">
+                                                £{{ number_format($d['originalPrice'], 2) }}
                                             </span>
                                         @endif
+                                        <span class="badge bg-primary">
+                                            {{ $d['hasVariants'] ? 'From ' : '' }}£{{ number_format($d['finalPrice'], 2) }}
+                                        </span>
                                     </p>
                                 </div>
+
                                 <p class="mb-0 text-muted small text-center">{!! $prod->description !!}</p>
                             </a>
                         </div>
-                    @endforeach
-                </div>
-            @endif
+                        @endforeach
+                    </div>
+                @endif
 
-        {{-- NORMAL MENU (when no search) --}}
-        @else
-            @if ($menuCategories && $menuCategories->isNotEmpty())
-                <!-- Menu Tabs -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="menu-tabs-wrapper">
-                            <div class="menu-tabs-container">
-                                <ul class="nav nav-tabs nav-justified menu-category-tabs" id="menuTabs"
-                                    role="tablist">
-                                    @foreach ($menuCategories as $index => $menuCat)
-                                        <li class="nav-item" role="presentation">
-                                            <button class="nav-link @if ($index == 0) active @endif"
-                                                id="tab{{ $menuCat->id }}" data-bs-toggle="tab"
-                                                data-bs-target="#menuTab{{ $menuCat->id }}" type="button"
-                                                role="tab" aria-controls="menuTab{{ $menuCat->id }}"
-                                                aria-selected="@if ($index == 0) true @else false @endif">
-                                                {{ $menuCat->name }}
-                                            </button>
-                                        </li>
-                                    @endforeach
-                                </ul>
+            {{-- ============================================================
+                 NORMAL MENU (tabbed)
+                 ============================================================ --}}
+            @else
+                @if ($menuCategories && $menuCategories->isNotEmpty())
+
+                    {{-- Tab nav --}}
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="menu-tabs-wrapper">
+                                <div class="menu-tabs-container">
+                                    <ul class="nav nav-tabs nav-justified menu-category-tabs"
+                                        id="menuTabs" role="tablist">
+                                        @foreach ($menuCategories as $index => $menuCat)
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link @if($index==0) active @endif"
+                                                    id="tab{{ $menuCat->id }}"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#menuTab{{ $menuCat->id }}"
+                                                    type="button" role="tab"
+                                                    aria-controls="menuTab{{ $menuCat->id }}"
+                                                    aria-selected="{{ $index == 0 ? 'true' : 'false' }}">
+                                                    {{ $menuCat->name }}
+                                                </button>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Menu Content -->
-                <div class="tab-content" id="menuContent">
-                    @foreach ($menuCategories as $index => $menuCat)
-                        <div class="tab-pane fade @if ($index == 0) show active @endif"
-                            id="menuTab{{ $menuCat->id }}" role="tabpanel"
-                            aria-labelledby="tab{{ $menuCat->id }}">
-                            @if ($menuCat->product && $menuCat->product->isNotEmpty())
-                                <div class="row g-4">
-                                    @foreach ($menuCat->product as $prod)
+                    {{-- Tab content --}}
+                    <div class="tab-content" id="menuContent">
+                        @foreach ($menuCategories as $index => $menuCat)
+                            <div class="tab-pane fade @if($index==0) show active @endif"
+                                id="menuTab{{ $menuCat->id }}" role="tabpanel"
+                                aria-labelledby="tab{{ $menuCat->id }}">
+
+                                @if ($menuCat->product && $menuCat->product->isNotEmpty())
+                                    <div class="row g-4">
+                                        @foreach ($menuCat->product as $prod)
+                                        @php $d = calcDiscount($prod); @endphp
                                         <div class="col-xl-3 col-lg-4 col-md-6">
-                                            <a class="popular-item bg-transparent border rounded p-4 d-block text-start h-100"
+                                            <a class="popular-item bg-transparent border rounded p-4 d-block text-center h-100 position-relative"
                                                 href="#" data-bs-toggle="modal"
                                                 data-bs-target="#menuModalFull-{{ $prod->id }}">
+
+                                                {{-- ✅ Discount badge --}}
+                                                @if($d['hasDiscount'])
+                                                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">
+                                                        {{ $d['badgeText'] }}
+                                                    </span>
+                                                @endif
+
                                                 <div class="text-center mb-3">
-                                                    <img class="img-fluid" src="{{ asset($prod->image) }}"
-                                                        style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px;">
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <img class="img-fluid rounded"
+                                                             src="{{ asset($prod->image) }}"
+                                                             alt="{{ $prod->name }}"
+                                                             style="width:130px;height:130px;object-fit:cover;">
+
+                                                        {{-- ✅ Complementary product --}}
+                                                        @if(optional($d['comp'])->complementary)
+                                                            <span style="font-size:22px;font-weight:bold;color:#000;">+</span>
+                                                            <div class="text-center">
+                                                                <img class="img-fluid rounded"
+                                                                     src="{{ asset($d['comp']->complementary->image) }}"
+                                                                     alt="{{ $d['comp']->complementary->name }}"
+                                                                     style="width:100px;height:100px;object-fit:cover;">
+                                                                <br>
+                                                                <span class="badge bg-success m-2">BUY 1 GET 1 FREE</span>
+                                                                <p class="mb-0 small mt-1 fw-medium text-dark">{{ $d['comp']->complementary->name }}</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 </div>
+
                                                 <div class="mb-2">
                                                     <h5 class="mb-1 main-heading text-center">{{ $prod->name }}</h5>
                                                     <p class="text-center mb-2">
-                                                        @if ($prod->variants && $prod->variants->isNotEmpty())
-                                                            <span class="badge bg-primary">From
-                                                                £{{ $prod->default_price }}</span>
-                                                        @else
-                                                            <span class="badge bg-primary">£{{ $prod->price }}</span>
+                                                        @if($d['hasDiscount'])
+                                                            <span class="text-muted text-decoration-line-through small d-block">
+                                                                £{{ number_format($d['originalPrice'], 2) }}
+                                                            </span>
                                                         @endif
+                                                        <span class="badge bg-primary">
+                                                            {{ $d['hasVariants'] ? 'From ' : '' }}£{{ number_format($d['finalPrice'], 2) }}
+                                                        </span>
                                                     </p>
                                                 </div>
-                                                <p class="mb-0 text-muted small text-center">{!! $prod->description !!}
-                                                </p>
+
+                                                <p class="mb-0 text-muted small text-center">{!! $prod->description !!}</p>
                                             </a>
                                         </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="alert alert-warning text-center">
-                                    <h5>No products found in {{ $menuCat->name }}!</h5>
-                                    <p class="mb-0">We're currently updating this section. Please check back soon!
-                                    </p>
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-        @endif
-    </div>
-</div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div class="alert alert-warning text-center">
+                                        <h5>No products found in {{ $menuCat->name }}!</h5>
+                                        <p class="mb-0">We're currently updating this section. Please check back soon!</p>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
 
-{{-- MODALS FOR ALL PRODUCTS (both search results and normal menu) --}}
-@if ($menuCategories && $menuCategories->isNotEmpty())
-    @foreach ($menuCategories as $menuCat)
-        @if ($menuCat->product && $menuCat->product->isNotEmpty())
-            @foreach ($menuCat->product as $prod)
+                @else
+                    <div class="alert alert-warning text-center">
+                        <h5>No menu categories found!</h5>
+                        <p class="mb-0">We're currently updating the menu. Please check back soon!</p>
+                    </div>
+                @endif
+            @endif
+
+        </div>
+    </div>
+    {{-- FULL MENU END --}}
+
+    {{-- ================================================================
+         MODALS — generated from all categories
+         (covers both search results & normal menu items)
+         ================================================================ --}}
+    @if ($menuCategories && $menuCategories->isNotEmpty())
+        @foreach ($menuCategories as $menuCat)
+            @if ($menuCat->product && $menuCat->product->isNotEmpty())
+                @foreach ($menuCat->product as $prod)
+                @php $d = calcDiscount($prod); @endphp
+
                 <div class="container-fluid cart food-modal wow fadeIn" data-wow-delay="0.1s">
-                    <div class="modal fade menu-modal" id="menuModalFull-{{ $prod->id }}" tabindex="-1"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade menu-modal" id="menuModalFull-{{ $prod->id }}"
+                        tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                             <div class="modal-content">
                                 <div class="modal-body p-0 scrollable">
+
                                     <input type="hidden" name="product_id" value="{{ $prod->id }}">
-                                    <img class="w-100" src="{{ asset($prod->image) }}" alt="product-img">
+
+                                    {{-- Product image + discount badge --}}
+                                    <div class="position-relative">
+                                        <img class="w-100" src="{{ asset($prod->image) }}" alt="product-img">
+                                        @if($d['hasDiscount'])
+                                            <span class="badge bg-danger position-absolute top-0 end-0 m-3 fs-6">
+                                                {{ $d['badgeText'] }}
+                                            </span>
+                                        @endif
+                                    </div>
+
                                     <div class="p-3 description">
                                         <h3>{{ $prod->name }}</h3>
 
-                                        @if (count($prod->variants) > 0)
-                                            <p>£ <span
-                                                    class="prodPrice">{{ $prod->default_price }}</span>
-                                            </p>
-
-                                            <select class="form-control bg-white ps-1 select-size"
-                                                name="variant_id" id="sizeSelect" style="appearance: auto">
-                                                @foreach ($prod->variants as $variant)
-                                                    <option value="{{ $variant->id }} {{ $variant->price }}">
-                                                        {{ $variant->size }}</option>
-                                                @endforeach
-                                            </select>
-                                            <h6 class="small mt-1 mb-3">Note: Prices vary depending on the selected
-                                                size</h6>
-                                        @else
-                                            <p>£ <span class="prodPrice">{{ $prod->price }}</span></p>
+                                        {{-- ✅ Complementary product in modal --}}
+                                        @if(optional($d['comp'])->complementary)
+                                            <input type="hidden"
+                                                value="{{ $d['comp']->complementary->id }}"
+                                                name="complementary_id">
+                                            <div class="mt-3 text-center">
+                                                <img class="img-fluid rounded-circle"
+                                                     src="{{ asset($d['comp']->complementary->image) }}"
+                                                     alt="{{ $d['comp']->complementary->name }}"
+                                                     style="width:100px;height:100px;object-fit:cover;">
+                                                <br>
+                                                <span class="badge bg-success m-2">BUY 1 GET 1 FREE</span>
+                                                <p class="mb-0 small fw-medium text-dark">
+                                                    {{ $d['comp']->complementary->name }}
+                                                </p>
+                                            </div>
                                         @endif
 
+                                        {{-- ✅ PRICE DISPLAY — variant or simple, with/without discount --}}
+                                        @if($d['hasVariants'])
+                                            {{--
+                                                variant-original-price: shows when variant.original_price > variant.price
+                                                JS will update both spans on select change & on modal open.
+                                                We hide it by default if no discount on the first variant.
+                                            --}}
+                                            <p class="price-display mb-1">
+                                                <span class="text-muted text-decoration-line-through d-block variant-original-price"
+                                                    @if(!($d['originalPrice'] > 0 && $d['originalPrice'] > $d['finalPrice']))
+                                                        style="display:none!important"
+                                                    @endif>
+                                                    £{{ number_format($d['originalPrice'], 2) }}
+                                                </span>
+                                                £ <span class="prodPrice">{{ number_format($d['finalPrice'], 2) }}</span>
+                                            </p>
+
+                                            {{--
+                                                ✅ KEY FIX: data-original attribute on each option
+                                                so JS can read variant.original_price for strikethrough
+                                            --}}
+                                            <select class="form-control bg-white ps-1 select-size"
+                                                    name="variant_id" style="appearance:auto">
+                                                @foreach ($prod->variants as $variant)
+                                                    <option
+                                                        value="{{ $variant->id }} {{ number_format((float)$variant->price, 2) }}"
+                                                        data-original="{{ number_format((float)($variant->original_price ?? 0), 2) }}"
+                                                        {{ $loop->first ? 'selected' : '' }}>
+                                                        {{ $variant->size }} – £{{ number_format((float)$variant->price, 2) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <h6 class="small mt-1 mb-3">Note: Prices vary depending on the selected size</h6>
+
+                                        @else
+                                            {{-- Simple product --}}
+                                            @if($d['hasDiscount'])
+                                                <p>
+                                                    <span class="text-muted text-decoration-line-through">
+                                                        £{{ number_format($d['originalPrice'], 2) }}
+                                                    </span><br>
+                                                    <span class="text-danger fw-bold prodPrice">
+                                                        £{{ number_format($d['finalPrice'], 2) }}
+                                                    </span>
+                                                </p>
+                                            @else
+                                                <p>£ <span class="prodPrice">{{ number_format($d['finalPrice'], 2) }}</span></p>
+                                            @endif
+                                        @endif
+                                        {{-- END price display --}}
+
                                         <p class="small">{!! $prod->description !!}</p>
+
                                         <div class="d-flex cart-btn">
                                             <button class="btn p-0 decrement" type="button">-</button>
-                                            <input type="text" class="cart_input increment-input text-center"
+                                            <input type="text"
+                                                class="cart_input increment-input text-center"
                                                 value="1" name="quantity"
                                                 id="quantity_{{ $prod->id }}">
                                             <button class="btn p-0 increment" type="button">+</button>
                                         </div>
                                     </div>
 
-                                    <!-- Location Start -->
+                                    {{-- How to get it --}}
                                     <div class="description p-3">
                                         <div class="d-flex justify-content-between">
-                                            <h6 class="">How to get it</h6>
+                                            <h6>How to get it</h6>
                                             <h6 class="text-danger">Required</h6>
                                         </div>
-                                        <div class="d-flex align-items-start">
-                                            @foreach ($branches as $index => $branch)
-                                                @if ($branch->status == 1)
-                                                    <div class="branch-option mb-3">
-                                                        <input type="hidden" name="branch_id" value="{{ $branch->id }}">
+                                        @foreach ($branches as $branchIndex => $branch)
+                                            @if ($branch->status == 1)
+                                                <div class="branch-option mb-3">
+                                                    <input type="hidden" name="branch_id" value="{{ $branch->id }}">
 
-                                                        {{-- Store Pickup Option --}}
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" 
-                                                                type="radio" 
-                                                                name="status_{{ $prod->id }}"
-                                                                id="pickupStatus{{ $prod->id }}_{{ $branch->id }}" 
-                                                                value="1" 
-                                                                checked 
-                                                                onchange="toggleDelivery('{{ $prod->id }}', '{{ $branch->id }}')">
-                                                            <label class="form-check-label fw-bold small" for="pickupStatus{{ $prod->id }}_{{ $branch->id }}">
-                                                                Store Pickup
-                                                            </label>
-                                                        </div>
-
-                                                        {{-- Store Pickup Address --}}
-                                                        <p class="small fw-bold m-0 sel-location mt-1" id="storePickupSection{{ $prod->id }}_{{ $branch->id }}">
-                                                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($branch->location) }}" 
-                                                            target="_blank" 
-                                                            style="text-decoration: none; color: inherit;">
-                                                                {{ $branch->location }}
-                                                            </a>
-                                                        </p>
-
-                                                        {{-- Home Delivery Option --}}
-                                                        <div class="form-check mt-3">
-                                                            <input class="form-check-input" 
-                                                                type="radio" 
-                                                                name="status_{{ $prod->id }}" 
-                                                                id="homeStatus{{ $prod->id }}_{{ $branch->id }}" 
-                                                                value="2" 
-                                                                onchange="toggleDelivery('{{ $prod->id }}', '{{ $branch->id }}')">
-                                                            <label class="form-check-label fw-bold small" for="homeStatus{{ $prod->id }}_{{ $branch->id }}">
-                                                                Home Delivery
-                                                            </label>
-                                                        </div>
-
-                                                        {{-- Delivery Address Input --}}
-                                                        <div id="deliveryAddressField{{ $prod->id }}_{{ $branch->id }}" class="mt-2" style="display: none;">
-                                                            <input type="text" name="delivery_address_{{ $prod->id }}" class="form-control" placeholder="Enter your delivery address">
-                                                        </div>
+                                                    {{-- Store Pickup --}}
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="status_{{ $prod->id }}"
+                                                            id="pickupStatus{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}"
+                                                            value="1" checked
+                                                            onchange="toggleDelivery('{{ $prod->id }}', '{{ $branch->id }}_{{ $branchIndex }}')">
+                                                        <label class="form-check-label fw-bold small"
+                                                            for="pickupStatus{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}">
+                                                            Store Pickup
+                                                        </label>
                                                     </div>
-                                                @endif
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <!-- Location End -->
+                                                    <p class="small fw-bold m-0 sel-location mt-1"
+                                                        id="storePickupSection{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}">
+                                                        <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($branch->location) }}"
+                                                            target="_blank" style="text-decoration:none;color:inherit;">
+                                                            {{ $branch->location }}
+                                                        </a>
+                                                    </p>
 
-                                    <!-- Toppings Start-->
+                                                    {{-- Home Delivery --}}
+                                                    <div class="form-check mt-3">
+                                                        <input class="form-check-input" type="radio"
+                                                            name="status_{{ $prod->id }}"
+                                                            id="homeStatus{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}"
+                                                            value="2"
+                                                            onchange="toggleDelivery('{{ $prod->id }}', '{{ $branch->id }}_{{ $branchIndex }}')">
+                                                        <label class="form-check-label fw-bold small"
+                                                            for="homeStatus{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}">
+                                                            Home Delivery
+                                                        </label>
+                                                    </div>
+                                                    <div id="deliveryAddressField{{ $prod->id }}_{{ $branch->id }}_{{ $branchIndex }}"
+                                                        class="mt-2" style="display:none;">
+                                                        {{-- ✅ Google Autocomplete input with data attributes --}}
+                                                        <input type="text"
+                                                            id="deliveryInput{{ $prod->id }}_{{ $branch->id }}"
+                                                            name="delivery_address_{{ $prod->id }}"
+                                                            class="form-control location-input"
+                                                            data-product="{{ $prod->id }}"
+                                                            data-branch="{{ $branch->id }}"
+                                                            placeholder="Enter your delivery address"
+                                                            autocomplete="off" />
+                                                        <input type="hidden" name="lat_{{ $prod->id }}"
+                                                            id="lat{{ $prod->id }}_{{ $branch->id }}">
+                                                        <input type="hidden" name="lng_{{ $prod->id }}"
+                                                            id="lng{{ $prod->id }}_{{ $branch->id }}">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+
+                                    {{-- Toppings --}}
                                     @if ($prod->category && $prod->category->isNotEmpty())
-                                        @foreach ($prod->category as $index => $category)
+                                        @foreach ($prod->category as $toppingIndex => $category)
                                             <div class="description p-3">
-                                                <div class="arrow" style="cursor: pointer"
+                                                <div class="arrow" style="cursor:pointer"
                                                     data-bs-toggle="collapse"
-                                                    data-bs-target="#toppingFull{{ $index }}{{ $category->id }}">
+                                                    data-bs-target="#toppingFull{{ $toppingIndex }}{{ $category->id }}{{ $prod->id }}">
                                                     <div class="d-flex justify-content-between">
                                                         <h6 class="m-0">{{ $category->getCategory->name }}</h6>
                                                         <h6 class="fw-normal m-0 d-flex align-items-center">
@@ -545,11 +613,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="collapse show"
-                                                    id="toppingFull{{ $index }}{{ $category->id }}">
+                                                    id="toppingFull{{ $toppingIndex }}{{ $category->id }}{{ $prod->id }}">
                                                     @php
                                                         $categoryToppings = App\Models\CategoryTopping::where(
-                                                            'category_id',
-                                                            $category->getCategory->id,
+                                                            'category_id', $category->getCategory->id
                                                         )->get();
                                                     @endphp
                                                     @foreach ($categoryToppings as $categoryTopping)
@@ -557,16 +624,16 @@
                                                             <div class="form-check">
                                                                 <input class="form-check-input" type="checkbox"
                                                                     name="toppings[]"
-                                                                    id="toppingchekFull{{ $index }}{{ $category->id }}{{ $categoryTopping->topping->id }}"
+                                                                    id="toppingchekFull{{ $toppingIndex }}{{ $category->id }}{{ $categoryTopping->topping->id }}{{ $prod->id }}"
                                                                     value="{{ $categoryTopping->topping->id }}"
                                                                     data-category-id="{{ $category->getCategory->id }}">
                                                                 <label class="form-check-label m-0"
-                                                                    for="toppingchekFull{{ $index }}{{ $category->id }}{{ $categoryTopping->topping->id }}">
+                                                                    for="toppingchekFull{{ $toppingIndex }}{{ $category->id }}{{ $categoryTopping->topping->id }}{{ $prod->id }}">
                                                                     {{ $categoryTopping->topping->name }}
                                                                 </label>
                                                             </div>
                                                             <p class="m-0">
-                                                                {{ isset($categoryTopping->topping->price) ? '£' . $categoryTopping->topping->price : '' }}
+                                                                {{ isset($categoryTopping->topping->price) ? '£'.$categoryTopping->topping->price : '' }}
                                                             </p>
                                                         </div>
                                                     @endforeach
@@ -574,514 +641,402 @@
                                             </div>
                                         @endforeach
                                     @endif
-                                    <!-- Toppings End -->
-                                </div>
+
+                                </div>{{-- /modal-body --}}
+
                                 <div class="modal-footer position-relative px-2">
                                     <button type="button"
-                                        style="font-size: 24px;position: absolute;left: 0;width: 30px;height: 30px;display: flex;justify-content: center;align-items: center"
+                                        style="font-size:24px;position:absolute;left:0;width:30px;height:30px;display:flex;justify-content:center;align-items:center"
                                         class="btn time-modal-close ri-close-circle-line btn-danger px-2 ms-3 py-0"
                                         data-bs-dismiss="modal"></button>
                                     <div class="text-center mx-auto">
-                                        <button class="btn btn-danger addto-cart px-sm-5 px-4"
-                                            data-bs-dismiss="modal">Add To Order</button>
+                                        <button class="btn btn-danger addto-cart px-sm-5 px-4">
+                                            Add To Order
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            @endforeach
-        @endif
-    @endforeach
-@endif
 
+                @endforeach
+            @endif
+        @endforeach
+    @endif
 
-    <!-- Food Modals for Full Menu Start -->
-
-    <!-- Food Modals for Full Menu End -->
-
-    <!-- About Start -->
-    <!-- <div class="container-xxl py-5">
-    <div class="container">
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-6 mt-lg-5 mt-0">
-                <div class="row g-3">
-                    <div class="col-6 text-start">
-                        <img class="img-fluid rounded w-100 wow zoomIn about-us-az-1" data-wow-delay="0.1s"
-                            src="{{ asset('public/img/az-1.jpg') }}">
-                    </div>
-                    <div class="col-6 text-start">
-                        <img class="img-fluid rounded w-75 wow zoomIn about-us-az-2" data-wow-delay="0.3s"
-                            src="{{ asset('public/img/az-2.JPG') }}" style="margin-top: 5rem">
-                    </div>
-                    <div class="col-6 text-end">
-                        <img class="img-fluid rounded w-75 wow zoomIn about-us-az-2" data-wow-delay="0.5s"
-                            src="{{ asset('public/img/az-16.jpg') }}">
-                    </div>
-                    <div class="col-6 text-end">
-                        <img class="img-fluid rounded w-100 wow zoomIn about-us-az-1" data-wow-delay="0.7s"
-                            src="{{ asset('public/img/az-3.jpg') }}">
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 text-sm-start text-center">
-                <h5 class="section-title ff-secondary text-start text-primary fw-normal">Loyalty Points</h5>
-                <h1 class="mb-4">Become A Loyal Member</h1>
-                <p class="mb-4">Members enjoy exclusive benefits and access.</p>
-                <p class="mb-4">For every dollar spent on an order, you'll earn 1 point.</p>
-                <p class="mb-4">Receive a $5 reward upon reaching 150 points.</p>
-                <a class="btn btn-primary py-3 px-5 mt-2" href="{{ route('loyality-points') }}">Loyalty Points</a>
-            </div>
-        </div>
-    </div>
-</div> -->
-    <!-- About End -->
 @endsection
+
 @section('js')
 
-    @if (\Illuminate\Support\Facades\Session::has('message'))
-        <script>
-            toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');
-        </script>
-    @endif
-    <script>
-function toggleDelivery(productId, branchId) {
-    const pickupRadio = document.getElementById(`pickupStatus${productId}_${branchId}`);
-    const homeRadio = document.getElementById(`homeStatus${productId}_${branchId}`);
-    const pickupSection = document.getElementById(`storePickupSection${productId}_${branchId}`);
-    const deliveryField = document.getElementById(`deliveryAddressField${productId}_${branchId}`);
+@if (\Illuminate\Support\Facades\Session::has('message'))
+    <script>toastr.success('{{ \Illuminate\Support\Facades\Session::get('message') }}');</script>
+@endif
+
+<script>
+$(function () {
+
+    // =========================================================
+    // 1. VARIANT SELECT CHANGE → update price + strikethrough
+    //    ✅ Reads data-original from option for variant.original_price
+    // =========================================================
+    $(document).on('change', '.select-size', function () {
+        var selectedOption = $(this).find('option:selected');
+        var parts          = $(this).val().trim().split(' ');
+        var price          = parseFloat(parts[parts.length - 1]);           // variant.price
+        var originalPrice  = parseFloat(selectedOption.data('original')) || 0; // variant.original_price
+        var $modalBody     = $(this).closest('.modal-body');
+
+        // Update current price
+        $modalBody.find('.prodPrice').text(price.toFixed(2));
+
+        // ✅ Show/hide strikethrough original price
+        var $strikeEl = $modalBody.find('.variant-original-price');
+        if (originalPrice > 0 && originalPrice > price) {
+            $strikeEl.text('£' + originalPrice.toFixed(2)).removeAttr('style').show();
+        } else {
+            $strikeEl.text('').hide();
+        }
+    });
+
+    // =========================================================
+    // 2. MODAL OPEN → initialise price from pre-selected variant
+    //    ✅ Uses shown.bs.modal (fires after animation, DOM ready)
+    // =========================================================
+    $(document).on('shown.bs.modal', '.menu-modal', function () {
+        var $select = $(this).find('.select-size');
+        if (!$select.length) return;
+
+        var $selectedOpt  = $select.find('option:selected');
+        var parts         = $selectedOpt.val().trim().split(' ');
+        var price         = parseFloat(parts[parts.length - 1]);
+        var originalPrice = parseFloat($selectedOpt.data('original')) || 0;
+
+        $(this).find('.prodPrice').text(price.toFixed(2));
+
+        var $strikeEl = $(this).find('.variant-original-price');
+        if (originalPrice > 0 && originalPrice > price) {
+            $strikeEl.text('£' + originalPrice.toFixed(2)).removeAttr('style').show();
+        } else {
+            $strikeEl.text('').hide();
+        }
+    });
+
+    // =========================================================
+    // 3. INCREMENT / DECREMENT
+    // =========================================================
+    $(document).on('click', '.increment', function () {
+        var $input = $(this).siblings('.cart_input');
+        $input.val(parseInt($input.val()) + 1);
+    });
+
+    $(document).on('click', '.decrement', function () {
+        var $input = $(this).siblings('.cart_input');
+        var val    = parseInt($input.val()) - 1;
+        $input.val(val >= 1 ? val : 1);
+    });
+
+    // =========================================================
+    // 4. ADD TO ORDER
+    // =========================================================
+    $(document).on('click', '.addto-cart', function () {
+        var $btn      = $(this);
+        var $modal    = $btn.closest('.food-modal');
+
+        var productId = $modal.find('input[name="product_id"]').val();
+        var quantity  = $modal.find('input[name="quantity"]').val() || 1;
+        var branchId  = $modal.find('input[name="branch_id"]').first().val();
+
+        var complementaryId = $modal.find('input[name="complementary_id"]').length
+            ? $modal.find('input[name="complementary_id"]').val()
+            : null;
+
+        if (!productId) { toastr.error('Product not found.'); return; }
+
+        var deliveryStatus  = $modal.find('input[name^="status_"]:checked').val() || '1';
+        var deliveryAddress = '', lat = '', lng = '';
+
+        if (deliveryStatus == '2') {
+            deliveryAddress = $modal.find('input[name="delivery_address_' + productId + '"]').val();
+            lat             = $modal.find('input[name="lat_' + productId + '"]').val();
+            lng             = $modal.find('input[name="lng_' + productId + '"]').val();
+
+            if (!deliveryAddress) {
+                toastr.error('Please enter delivery address');
+                return;
+            }
+            if (!lat || !lng) {
+                toastr.error('Please select a valid address from the suggestions');
+                return;
+            }
+        }
+
+        // Variant
+        var variantId  = '';
+        var $variantSel = $modal.find('select[name="variant_id"]');
+        if ($variantSel.length && $variantSel.val()) {
+            variantId = $variantSel.val().trim().split(' ')[0];
+        }
+
+        // Toppings by category
+        var toppingsByCategory = {};
+        $modal.find('input[name="toppings[]"]:checked').each(function () {
+            var catId = $(this).data('category-id');
+            if (!toppingsByCategory[catId]) toppingsByCategory[catId] = [];
+            toppingsByCategory[catId].push($(this).val());
+        });
+        var toppingsArray = Object.entries(toppingsByCategory).map(function (entry) {
+            return { category_id: entry[0], toppings: entry[1] };
+        });
+
+        $btn.prop('disabled', true).text('Adding...');
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("add.to.cart") }}',
+            data: {
+                _token:               '{{ csrf_token() }}',
+                product_id:           productId,
+                quantity:             quantity,
+                branch_id:            branchId,
+                variant_id:           variantId,
+                delivery_status:      deliveryStatus,
+                delivery_address:     deliveryAddress,
+                lat:                  lat,
+                lng:                  lng,
+                complementary_id:     complementaryId,
+                location:             deliveryStatus,
+                toppings_by_category: toppingsArray,
+            },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success('Product added to cart!');
+                    var cartCount = Object.keys(response.cart).length;
+                    $('.cart-counter-1').text(cartCount);
+                    updateCartUI(response);
+                    if (cartCount > 0) {
+                        $('a[href*="my-cart"]').removeClass('disabled').prop('disabled', false);
+                    }
+                    $btn.closest('.modal').modal('hide');
+                } else {
+                    toastr.error(response.message || 'Something went wrong.');
+                }
+            },
+            error: function (xhr) {
+                console.error('Cart error:', xhr.responseText);
+                toastr.error('Error: ' + (xhr.responseJSON?.message || 'Server error'));
+            },
+            complete: function () {
+                $btn.prop('disabled', false).text('Add To Order');
+            }
+        });
+    });
+
+    // =========================================================
+    // 5. UPDATE CART UI
+    // =========================================================
+    function updateCartUI(data) {
+        var cartItemCount = 0;
+        var html = '';
+
+        $.each(data.cart, function (key, product) {
+            cartItemCount += parseInt(product.quantity);
+
+            html += '<div class="carting-child px-3 mt-3 d-flex justify-content-between pb-3 border-bottom" id="' + product.product_id + 'carted">';
+            html += '<img src="' + product.image + '" alt="">';
+            html += '<div class="content">';
+            html += '<div class="d-flex cart-input-parent justify-content-between">';
+            html += '<h6 class="m-0">' + product.name;
+            html += product.size ? ' (<span style="font-size:12px">' + product.size + '</span>)' : '';
+            html += '</h6>';
+            html += '<h6 class="m-0 total-price">£' + (parseFloat(product.price) * product.quantity).toFixed(2) + '</h6>';
+            html += '<p class="product-price d-none">' + product.price + '</p>';
+            html += '</div>';
+
+            html += '<div class="delivery-info mb-2">';
+            html += '<p class="small m-0 text-' + (product.delivery_status == '2' ? 'info' : 'success') + '">';
+            html += product.delivery_status == '2' ? 'Home Delivery' : 'Store Pickup';
+            html += '</p>';
+            if (product.delivery_status == '2' && product.delivery_address) {
+                html += '<p class="small m-0">Delivery to: ' + product.delivery_address + '</p>';
+            }
+            html += '</div>';
+
+            html += '<div class="mb-2"><h6 class="m-0">Toppings</h6>';
+            if (product.toppingsName_by_categoryName && product.toppingsName_by_categoryName.length) {
+                $.each(product.toppingsName_by_categoryName, function (i, cat) {
+                    html += '<div class="mb-2">';
+                    html += '<p class="mb-1 fw-bold text-black">' + cat.category_name + '</p>';
+                    $.each(cat.topping_names, function (j, name) {
+                        html += '<p class="small m-0">' + name + '</p>';
+                    });
+                    html += '</div>';
+                });
+            }
+            html += '</div>';
+
+            html += '<div class="cart-btn">';
+            html += '<button class="btn decrement-btn p-0" data-product-id="' + product.product_id + ',' + product.variant_id + '">-</button>';
+            html += '<input type="number" name="quantity" value="' + product.quantity + '" class="increment-input cart-input cart_input text-center">';
+            html += '<button class="btn increment-btn p-0" data-product-id="' + product.product_id + ',' + product.variant_id + '">+</button>';
+            html += '<p id="' + product.product_id + '" class="d-none sibling-p"></p>';
+            html += '</div></div></div>';
+        });
+
+        $('.cart-counter-1').text(cartItemCount);
+        $('.cards-parent').html(html);
+        if (cartItemCount > 0) $('.button-disable').removeClass('disabled');
+    }
+
+    // =========================================================
+    // 6. TOPPING ARROW TOGGLE
+    // =========================================================
+    $(document).on('click', '.arrow', function () {
+        var $icon = $(this).find('span');
+        $icon.toggleClass('ri-arrow-up-s-line ri-arrow-down-s-line');
+    });
+
+    // =========================================================
+    // 7. UPDATE LOCATION BUTTON
+    // =========================================================
+    $(document).on('click', '.updateLocationBtn', function () {
+        var $selected = $('input[name="choosen_location"]:checked');
+        if (!$selected.length) { alert('Please select a location.'); return; }
+        $.ajax({
+            type: 'POST',
+            url: '{{ route("update.branch.status") }}',
+            data: { _token: '{{ csrf_token() }}', branch_id: $selected.data('branch-id') },
+            success: function () {
+                toastr.success('Location Updated Successfully');
+                setTimeout(function () { location.reload(); }, 1000);
+            },
+            error: function (error) { console.error('Error updating branch status:', error); }
+        });
+    });
+
+    // =========================================================
+    // 8. TAB SCROLL
+    // =========================================================
+    window.scrollTabs = function (direction) {
+        var tabs = document.querySelector('.menu-category-tabs');
+        if (tabs) tabs.scrollBy({ left: direction === 'left' ? -200 : 200, behavior: 'smooth' });
+    };
+
+    (function () {
+        var tabs     = document.querySelector('.menu-category-tabs');
+        var leftBtn  = document.querySelector('.tab-scroll-btn.left');
+        var rightBtn = document.querySelector('.tab-scroll-btn.right');
+        if (!tabs || !leftBtn || !rightBtn) return;
+
+        function updateBtns() {
+            if (tabs.scrollWidth <= tabs.clientWidth) {
+                leftBtn.style.display = rightBtn.style.display = 'none';
+                return;
+            }
+            leftBtn.classList.toggle('disabled', tabs.scrollLeft === 0);
+            rightBtn.classList.toggle('disabled',
+                tabs.scrollLeft + tabs.clientWidth >= tabs.scrollWidth - 10);
+        }
+        tabs.addEventListener('scroll', updateBtns);
+        updateBtns();
+    })();
+
+}); // end $(function)
+
+// =========================================================
+// 9. TOGGLE DELIVERY (global function — called from onchange)
+//    ✅ branchUnique = "branchId_branchIndex" for unique IDs
+// =========================================================
+function toggleDelivery(productId, branchUnique) {
+    var pickupRadio   = document.getElementById('pickupStatus'         + productId + '_' + branchUnique);
+    var homeRadio     = document.getElementById('homeStatus'           + productId + '_' + branchUnique);
+    var pickupSection = document.getElementById('storePickupSection'   + productId + '_' + branchUnique);
+    var deliveryField = document.getElementById('deliveryAddressField' + productId + '_' + branchUnique);
+
+    if (!homeRadio || !pickupRadio) return;
 
     if (homeRadio.checked) {
-        pickupSection.style.display = 'none';
-        deliveryField.style.display = 'block';
-    } else if (pickupRadio.checked) {
-        pickupSection.style.display = 'block';
-        deliveryField.style.display = 'none';
-        deliveryField.querySelector('input').value = '';
+        if (pickupSection) pickupSection.style.display = 'none';
+        if (deliveryField) deliveryField.style.display = 'block';
+    } else {
+        if (pickupSection) pickupSection.style.display  = 'block';
+        if (deliveryField) {
+            deliveryField.style.display = 'none';
+            var inp = deliveryField.querySelector('input[type="text"]');
+            if (inp) inp.value = '';
+        }
     }
 }
 </script>
 
-    <script>
-        $(function() {
-            $(document).on('change', '.select-size', function() {
-                let a = $(this).val().split(' ')[1];
-                $(this).closest('.description').find('.prodPrice').text(a);
-            })
+{{-- =========================================================
+     GOOGLE MAPS AUTOCOMPLETE
+     ✅ pac-container z-index fix so modal doesn't swallow clicks
+     ========================================================= --}}
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUMK9qFdsbuuuTMiaPHCJok4Rro91yvaE&libraries=places&callback=initAllAutocomplete&loading=async">
+</script>
 
-            $(document).on('click', 'input:radio', function() {
-                var chooseLocation = $('input[name="choosen_location"]:checked').siblings('label').find(
-                    '.branch-location').text();
-                $('.sel-location').text(chooseLocation);
-                var dataBranchId = $(this).attr('data-branch-id');
-                $('input[name="branch_id"]').val(dataBranchId);
-            });
+<script>
+window.initAllAutocomplete = function () {
+    bindAutocomplete(document);
 
-            $(document).on('click', 'a[data-bs-toggle="modal"]', function() {
-                setTimeout(() => {
-                    $('.modal.show .loc-input').prop('checked', true);
-                }, 200);
-            })
+    // Re-bind when any modal opens (new inputs appear in DOM)
+    document.addEventListener('shown.bs.modal', function (e) {
+        bindAutocomplete(e.target);
 
-            //Description Dealing
-            $(document).on('click', '.arrow', function() {
-                let a = $(this).find('span');
-                if (a.hasClass('ri-arrow-up-s-line')) {
-                    a.removeClass('ri-arrow-up-s-line')
-                    a.addClass('ri-arrow-down-s-line');
-                } else {
-                    a.addClass('ri-arrow-up-s-line')
-                    a.removeClass('ri-arrow-down-s-line');
-                }
-            });
+        // ✅ Prevent Bootstrap modal from stealing pac-container clicks
+        e.target.addEventListener('mousedown', function preventModalSwallow(ev) {
+            if (ev.target.closest('.pac-container')) {
+                ev.stopPropagation();
+            }
+        }, true);
+    });
+};
 
-            //array to store the Google Map Location
-            let arr = [{
-                source: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3018.0477543418483!2d-73.84479512475968!3d40.84887532922607!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2f4ab4f07396d%3A0xe6c4ae3a2866d1b8!2sA%20Z%20Nutrition!5e0!3m2!1sen!2s!4v1700484957680!5m2!1sen!2s",
-                locationHeading: 'Sugar Pappi',
-                address1: '1578 Main Avenue Clifton, NJ 07011'
-            }, {
-                source: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3011.8769358092172!2d-73.82903412475196!3d40.98417552090991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2933bd5635a09%3A0x502bc89c049525ac!2s2562%20Central%20Park%20Ave%2C%20Yonkers%2C%20NY%2010710%2C%20USA!5e0!3m2!1sen!2s!4v1700483134249!5m2!1sen!2s",
-                locationHeading: 'Sugar Pappi',
-                address1: '2562 Central Park Av yonkers, NY 10710'
-            }, {
-                source: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3016.25629501146!2d-74.15504762475744!3d40.888192526811835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2fe99dc1b2ba9%3A0x84d65884be972356!2sA-Z%20Nutrition%26Smoothies!5e0!3m2!1sen!2s!4v1700485074231!5m2!1sen!2s",
-                locationHeading: 'Sugar Pappi',
-                address1: '1776 Eastchester Road Bronx, NY 10461'
-            }, {
-                source: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d96659.29314183394!2d-74.34112495664061!3d40.79274319999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25566ba35d8cb%3A0x2cb13edad59b0cbc!2sAmazon%20Hub%20Counter%20-%20A-Z%20Nutrition%20%26%20Smoothies!5e0!3m2!1sen!2s!4v1700485211429!5m2!1sen!2s",
-                locationHeading: 'Sugar Pappi',
-                address1: '549 Bloomfield Avenue Bloomfield, NJ 07003'
-            }, ];
+function bindAutocomplete(container) {
+    container.querySelectorAll('.location-input').forEach(function (input) {
+        if (input.dataset.autocompleteInit === '1') return; // skip already bound
+        input.dataset.autocompleteInit = '1';
 
-            //Control Of Modals
-            // $('.chose-location').click(function() {
-            //     $('.menu-modal').modal('hide')
-            // });
-            // $('#locationModal').click(function() {
-            //     event.stopPropagation();
-            //     $('.menu-modal').modal('show');
-            // });
-            // $('#locationModal .modal-dialog').click(function() {
-            //     event.stopPropagation();
-            //     $('.menu-modal').modal('hide');
-            // });
-            // $('.location-close').click(function() {
-            //     event.stopPropagation();
-            //     $('.menu-modal').modal('show');
-            //     $('#locationModal').modal('hide')
-            // });
-            // $('#locationDescription').click(function() {
-            //     event.stopPropagation();
-            //     $('#locationModal').modal('show');
-            // });
-            // $('#locationDescription').click(function() {
-            //     event.stopPropagation();
-            //     $('#locationModal').modal('show');
-            // });
-            // $('#locationDescription .modal-dialog').click(function() {
-            //     event.stopPropagation();
-            //     $('#locationModal').modal('hide');
-            // });
-            // $('.location-description-btn').click(function() {
-            //     $('#locationDescription').modal('hide');
-            //     $('#locationModal').modal('show');
-            // });
-            //this is updation of the Modal
+        var productId = input.dataset.product;
+        var branchId  = input.dataset.branch;
+        var latField  = document.getElementById('lat' + productId + '_' + branchId);
+        var lngField  = document.getElementById('lng' + productId + '_' + branchId);
 
-            $('.location-description').each(function(index) {
-                $(this).click(function() {
-                    // event.stopPropagation();
-                    // $('#locationModal').modal('hide');
-                    let i = index;
-                    let a = arr[i];
-                    //Changing location-description Modal;
-                    $('.locationHeading').text(a.locationHeading);
-                    $('.address1').text(a.address1);
-                    $('.address2').text(a.address2);
-                    $('iframe').attr('src', a.source);
-                });
-            });
+        var autocomplete = new google.maps.places.Autocomplete(input, {
+            fields: ['geometry', 'formatted_address'],
+            types:  ['geocode'],
+            componentRestrictions: { country: 'gb' }
         });
 
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all increment and decrement buttons
-            const incrementButtons = document.querySelectorAll('.increment');
-            const decrementButtons = document.querySelectorAll('.decrement');
-
-            // Attach click event listeners to each button
-            incrementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('.cart_input');
-                    input.value = parseInt(input.value) + 1;
-                });
-            });
-
-            decrementButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const input = this.parentElement.querySelector('.cart_input');
-                    const value = parseInt(input.value) - 1;
-                    input.value = value >= 1 ? value : 1;
-                });
-            });
+        // Clear lat/lng if user types manually (no suggestion selected yet)
+        input.addEventListener('input', function () {
+            if (latField) latField.value = '';
+            if (lngField) lngField.value = '';
         });
 
-        {{--  $('.addto-cart').on('click', function() {
-        var productId = $(this).closest('.food-modal').find('input[name="product_id"]').val();
-        var quantity = $(this).closest('.food-modal').find('input[name="quantity"]').val();
-        var isLocationChecked = $(this).closest('.food-modal').find('input[name="location"]:checked').length >
-            0;
-        var branchId = isLocationChecked ? $(this).closest('.food-modal').find('input[name="branch_id"]')
-            .val() : '';
-        var variantId = $(this).closest('.food-modal').find('select[name="variant_id"]').val().split(' ')[0]; // Get selected variant ID
-        var toppings = $(this).closest('.food-modal').find('input[name="toppings[]"]:checked').map(function() {
-            return $(this).val();
-
-        }).get();
-
-        $.ajax({
-            type: 'POST',
-            url: '{{ route('add.to.cart') }}',
-            data: {
-                '_token': '{{ csrf_token() }}',
-                'product_id': productId,
-                'quantity': quantity,
-                'branch_id': branchId,
-                'toppings': toppings,
-                'location': isLocationChecked,
-                'variant_id': variantId
-            },
-            success: function(data) {
-                toastr.success('Product Added To Cart Successfully!');
-                updateCartUI(data);
-            },
-            error: function(error) {
-                console.error('Error adding product to cart:', error);
-            }
-        });
-    });  --}}
-
-        // last commit
-        $('.addto-cart').on('click', function() {
-            var productId = $(this).closest('.food-modal').find('input[name="product_id"]').val();
-            var quantity = $(this).closest('.food-modal').find('input[name="quantity"]').val();
-            var isLocationChecked = $(this).closest('.food-modal').find('input[name="location"]:checked').length > 0;
-            var branchId = isLocationChecked ? $(this).closest('.food-modal').find('input[name="branch_id"]').val() : '';
-            var variantId = '';
-
-            // Get delivery status and address
-            var deliveryStatus = $(this).closest('.food-modal').find('input[name="status_' + productId + '"]:checked').val();
-            var deliveryAddress = '';
-            if (deliveryStatus == '2') { // If home delivery
-                deliveryAddress = $(this).closest('.food-modal').find('input[name="delivery_address_' + productId + '"]').val();
-                if (!deliveryAddress) {
-                    toastr.error('Please enter delivery address');
-                    return;
-                }
-            }
-
-            // Check if the product has variants
-            var variantSelect = $(this).closest('.food-modal').find('select[name="variant_id"]');
-            if (variantSelect.length > 0) {
-                variantId = variantSelect.val().split(' ')[0];
-            }
-
-            // Initialize an object to store selected toppings by category
-            var selectedToppingsByCategory = {};
-
-            // Get selected toppings
-            $(this).closest('.food-modal').find('input[name="toppings[]"]:checked').each(function() {
-                var categoryId = $(this).data('category-id');
-                var toppingId = $(this).val();
-
-                // Check if category ID already exists in the object
-                if (!selectedToppingsByCategory.hasOwnProperty(categoryId)) {
-                    selectedToppingsByCategory[categoryId] = [];
-                }
-
-                selectedToppingsByCategory[categoryId].push(toppingId);
-            });
-
-            // Convert the object to an array of objects
-            var toppingsArray = Object.entries(selectedToppingsByCategory).map(([categoryId, toppings]) => {
-                return {
-                    category_id: categoryId,
-                    toppings: toppings
-                };
-            });
-
-            // Send AJAX request
-            $.ajax({
-                type: 'POST',
-                url: '{{ route('add.to.cart') }}',
-                data: {
-                    '_token': '{{ csrf_token() }}',
-                    'product_id': productId,
-                    'quantity': quantity,
-                    'branch_id': branchId,
-                    'toppings_by_category': toppingsArray,
-                    'location': isLocationChecked,
-                    'variant_id': variantId,
-                    'delivery_status': deliveryStatus,
-                    'delivery_address': deliveryAddress
-                },
-                success: function(data) {
-                    toastr.success('Product Added To Cart Successfully!');
-                    // Update all cart counters in the header immediately
-                    $('.cart-counter-1').text(Object.keys(data.cart).length);
-                    // Update the cart UI
-                    updateCartUI(data);
-                },
-                error: function(error) {
-                    console.error('Error adding product to cart:', error);
-                }
-            });
+        // ✅ Set lat/lng when a suggestion is chosen
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (!place || !place.geometry) return;
+            if (latField) latField.value = place.geometry.location.lat();
+            if (lngField) lngField.value = place.geometry.location.lng();
+            if (place.formatted_address) input.value = place.formatted_address;
         });
 
-
-        function updateCartUI(data) {
-            var cartItemCount = 0;
-            var html = '';
-            jQuery.each(data['cart'], function(i, product) {
-                cartItemCount += parseInt(product.quantity);
-                html += '<div class="carting-child px-3 mt-3 d-flex justify-content-between pb-3 border-bottom" id="' + product.product_id + 'carted">';
-                html += '<img src="' + product.image +
-                    '" alt=""><div class="content"><div class="d-flex cart-input-parent justify-content-between">';
-                html += '<h6 class="m-0">' + product.name;
-                // Check if size exists and wrap it in a span within parentheses
-                html += product.size ? ' (<span style="font-size: 12px;">' + product.size + '</span>)' : '';
-                html += '</h6><h6 class="m-0 total-price">£' + ((parseFloat(product.price) * product.quantity)
-                        .toFixed(2)) +
-                    '</h6><p class="product-price d-none">' + product.price + '</p></div>';
-                
-                // Add delivery status and address
-                html += '<div class="delivery-info mb-2">';
-                html += '<p class="small m-0 text-' + (product.delivery_status == '2' ? 'info' : 'success') + '">';
-                html += product.delivery_status == '2' ? 'Home Delivery' : 'Store Pickup';
-                html += '</p>';
-                if (product.delivery_status == '2' && product.delivery_address) {
-                    html += '<p class="small m-0">Delivery to: ' + product.delivery_address + '</p>';
+        // ✅ Validate on blur — clear everything if no valid selection was made
+        input.addEventListener('blur', function () {
+            setTimeout(function () {
+                if (!latField || !latField.value || !lngField || !lngField.value) {
+                    input.value = '';
+                    if (latField) latField.value = '';
+                    if (lngField) lngField.value = '';
                 }
-                html += '</div>';
-
-                html += '<div class="mb-2"><h6 class="m-0">Toppings</h6>';
-                if (product.toppingsName_by_categoryName) {
-                    $.each(product.toppingsName_by_categoryName, function(index, category) {
-                        html += '<div class="mb-2">';
-                        html += '<p class="category-name mb-1 fw-bold pb-1 text-black">' + category.category_name + '</p>';
-                        $.each(category.topping_names, function(i, topping) {
-                            html += '<p class="small m-0">' + topping + '</p>';
-                        });
-                        html += '</div>';
-                    });
-                }
-
-                html += '</div><div class="cart-btn">';
-                html += '<button class="btn decrement-btn p-0" data-product-id="' + product.product_id + ',' +
-                    product.variant_id +
-                    '">-</button>';
-                html += '<input type="number" name="quantity" value="' + product.quantity +
-                    '" class="increment-input cart-input cart_input text-center">';
-                html += '<button class="btn increment-btn p-0" data-product-id="' + product.product_id + ',' +
-                    product.variant_id +
-                    '">+</button>';
-                html += '<p id="' + product.product_id + '" class="d-none sibling-p"></p>';
-                html += '</div></div></div>';
-            });
-
-            $('.cart-counter-1').text(cartItemCount);
-            $('.cards-parent').html(html);
-            // Add event listeners for increment and decrement buttons in the updated UI
-
-
-            if (cartItemCount > 0) {
-                $('.button-disable').removeClass('disabled');
-            }
-
-            function updateQuantity(productId, change) {
-                var product = data['cart'].find(p => p.product_id === productId);
-                if (product) {
-                    product.quantity += change;
-
-                    // Update the total price dynamically
-                    var totalElement = $('.total-price[data-product-id="' + productId + '"]');
-                    var newTotalPrice = '£' + ((parseFloat(product.price) * product.quantity).toFixed(2));
-                    totalElement.text(newTotalPrice);
-                }
-            }
-        }
-
-
-        // location update
-
-        $('.updateLocationBtn').on('click', function() {
-            // Find the selected radio button
-            var selectedBranch = $('input[name="choosen_location"]:checked');
-
-            if (selectedBranch.length === 0) {
-                alert('Please select a location before updating.');
-                return;
-            }
-
-            // Extract branch ID from the data attribute
-            var branchId = selectedBranch.data('branch-id');
-
-            // Send AJAX request to update branch status
-            $.ajax({
-                type: 'POST',
-                url: '{{ route('update.branch.status') }}',
-                data: {
-                    '_token': '{{ csrf_token() }}',
-                    'branch_id': branchId,
-                },
-                success: function(data) {
-                    toastr.success('Location Updated Successful');
-                    console.log(response.message);
-
-                    // Reload the page after a short delay
-                    setTimeout(function() {
-                        location.reload();
-                    }, 1000);
-                },
-                error: function(error) {
-                    console.error('Error updating branch status:', error);
-                }
-            });
-
+            }, 400); // 400ms so pac-item click registers first
         });
-
-        {{--  $('.sizeSelect').change(function () {
-        // Get the selected option
-        var selectedOption = $(this).find(':selected');
-        alert(selectedOption);
-        var selectedSize = selectedOption.data('size');
-
-        // Make an Ajax request to fetch the price
-        $.ajax({
-            url: '/get-price', // Change this to your Laravel route
-            type: 'GET',
-            data: { size: selectedSize },
-            success: function (data) {
-                // Update the price input field with the received data
-                $('#selSizePrice').val(data.price);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    });  --}}
-
-        // Menu Tabs Scrolling Function
-        function scrollTabs(direction) {
-            const tabsContainer = document.querySelector('.menu-category-tabs');
-            const scrollAmount = 200;
-            const currentScroll = tabsContainer.scrollLeft;
-
-            if (direction === 'left') {
-                tabsContainer.scrollBy({
-                    left: -scrollAmount,
-                    behavior: 'smooth'
-                });
-            } else if (direction === 'right') {
-                tabsContainer.scrollBy({
-                    left: scrollAmount,
-                    behavior: 'smooth'
-                });
-            }
-        }
-
-        // Check scroll position and update arrow states
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabsContainer = document.querySelector('.menu-category-tabs');
-            const leftBtn = document.querySelector('.tab-scroll-btn.left');
-            const rightBtn = document.querySelector('.tab-scroll-btn.right');
-
-            if (tabsContainer && leftBtn && rightBtn) {
-                function updateButtons() {
-                    const isScrollable = tabsContainer.scrollWidth > tabsContainer.clientWidth;
-
-                    if (!isScrollable) {
-                        leftBtn.style.display = 'none';
-                        rightBtn.style.display = 'none';
-                    } else {
-                        const isAtStart = tabsContainer.scrollLeft === 0;
-                        const isAtEnd = tabsContainer.scrollLeft + tabsContainer.clientWidth >= tabsContainer
-                            .scrollWidth - 10;
-
-                        leftBtn.classList.toggle('disabled', isAtStart);
-                        rightBtn.classList.toggle('disabled', isAtEnd);
-                    }
-                }
-
-                tabsContainer.addEventListener('scroll', updateButtons);
-                updateButtons();
-            }
-        });
-    </script>
-
-
-
-
+    });
+}
+</script>
 
 @endsection

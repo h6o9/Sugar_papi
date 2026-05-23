@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Menu;
 use App\Models\Product;
 use App\Models\Topping;
+use App\Models\ProductVariant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -88,6 +89,7 @@ class HomeController extends Controller
 //         'data'   => $response
 //     ]);
 // }
+
 public function homeProducts(Request $request)
 {
     $request->validate([
@@ -96,52 +98,126 @@ public function homeProducts(Request $request)
 
     $menuId = $request->menu_id;
 
-    // CASE: All products
+    /*
+    |--------------------------------------------------------------------------
+    | GET PRODUCTS
+    |--------------------------------------------------------------------------
+    */
     if ($menuId === 'all') {
-        $products = Product::with(['menu','complementaryProduct.complementary'])
-            ->where('status', '1')->get();
 
-    } elseif($menuId === "featured") {
+        $products = Product::with([
+                'menu',
+                'complementaryProduct.complementary'
+            ])
+            ->where('status', '1')
+            ->get();
 
-        $products = Product::with(['menu','complementaryProduct.complementary'])
-            ->where('is_featured', '1')->get();
+    } elseif ($menuId === 'featured') {
+
+        $products = Product::with([
+                'menu',
+                'complementaryProduct.complementary'
+            ])
+            ->where('is_featured', '1')
+            ->where('status', '1')
+            ->get();
 
     } else {
 
-        $products = Product::with(['menu','complementaryProduct.complementary'])
+        $products = Product::with([
+                'menu',
+                'complementaryProduct.complementary'
+            ])
             ->where('menu_id', $menuId)
             ->where('status', '1')
             ->get();
     }
 
-    // Prepare response with enhanced product information
-    $response = $products->map(function($product) {
+    /*
+    |--------------------------------------------------------------------------
+    | GET FIRST VARIANT OF EACH PRODUCT
+    |--------------------------------------------------------------------------
+    | ProductVariant table mein agar product_id exist karta hai,
+    | to us variant ki price aur original_price use hogi.
+    */
+    $productIds = $products->pluck('id')->toArray();
+
+    $variants = ProductVariant::whereIn('product_id', $productIds)
+        ->orderBy('id', 'asc')
+        ->get()
+        ->groupBy('product_id');
+
+    /*
+    |--------------------------------------------------------------------------
+    | PREPARE RESPONSE
+    |--------------------------------------------------------------------------
+    */
+    $response = $products->map(function ($product) use ($variants) {
 
         $menu = $product->menu;
 
-        // Calculate discount information
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK PRODUCT VARIANT
+        |--------------------------------------------------------------------------
+        | Agar variant exist karta hai to uska price use karo,
+        | warna original product ka price use karo.
+        */
+        $variant = null;
+
+        if (isset($variants[$product->id])) {
+            $variant = $variants[$product->id]->first(); // first variant
+        }
+
+        $finalPrice = $variant && !empty($variant->price)
+            ? $variant->price
+            : $product->price;
+
+        $finalOriginalPrice = $variant && !empty($variant->original_price)
+            ? $variant->original_price
+            : $product->original_price;
+
+        // Calculate discount information using updated prices
         $discountInfo = $this->calculateDiscountInfo($product);
 
+        // Override prices in discount calculation if variant exists
+        if ($variant) {
+            $discountInfo['price'] = $finalPrice;
+            $discountInfo['original_price'] = $finalOriginalPrice;
+        }
+
         $productData = [
-            'menu_name'        => $menu ? $menu->name : null,
-            'product_name'     => $product->name,
-            'product_id'       => $product->id,
-            'price'            => $product->price,
-            'original_price'   => $product->original_price,
-            'image'            => $product->image,
-            'is_featured'      => (bool)$product->is_featured,
+            'menu_name'      => $menu ? $menu->name : null,
+            'product_name'   => $product->name,
+            'product_id'     => $product->id,
+            'price'          => $finalPrice,
+            'original_price' => $finalOriginalPrice,
+            'image'          => $product->image,
+            'is_featured'    => (bool) $product->is_featured,
         ];
 
         /*
         |--------------------------------------------------------------------------
-        | COMPLEMENTARY PRODUCT (NEW - WITHOUT CHANGING OTHER LOGIC)
+        | VARIANT INFORMATION (OPTIONAL)
         |--------------------------------------------------------------------------
         */
+        if ($variant) {
+            $productData['variant'] = [
+                'id'             => $variant->id,
+                'size'           => $variant->size,
+                'price'          => $variant->price,
+                'original_price' => $variant->original_price,
+            ];
+        }
 
+        /*
+        |--------------------------------------------------------------------------
+        | COMPLEMENTARY PRODUCT
+        |--------------------------------------------------------------------------
+        */
         $comp = $product->complementaryProduct->first();
 
         if ($comp && $comp->complementary) {
-
             $productData['complementary_product'] = [
                 'id'    => $comp->complementary->id,
                 'name'  => $comp->complementary->name,
@@ -149,7 +225,11 @@ public function homeProducts(Request $request)
             ];
         }
 
-        // Discount logic (UNCHANGED)
+        /*
+        |--------------------------------------------------------------------------
+        | DISCOUNT LOGIC
+        |--------------------------------------------------------------------------
+        */
         if ($discountInfo['has_discount']) {
 
             $discountInfo['featured_method'] = $product->featured_method;
@@ -160,14 +240,18 @@ public function homeProducts(Request $request)
             $productData['special_type'] = 'discount';
         }
 
-        // Featured logic (UNCHANGED)
+        /*
+        |--------------------------------------------------------------------------
+        | FEATURED LOGIC
+        |--------------------------------------------------------------------------
+        */
         if ($product->is_featured && $product->featured_method) {
 
             $productData['featured_info'] = [
-                'method' => $product->featured_method,
-                'action' => $product->featured_action,
-                'amount' => $product->featured_amount,
-                'display_text' => $this->getFeaturedDisplayText($product)
+                'method'       => $product->featured_method,
+                'action'       => $product->featured_action,
+                'amount'       => $product->featured_amount,
+                'display_text' => $this->getFeaturedDisplayText($product),
             ];
 
             if (!isset($productData['is_special'])) {
@@ -182,9 +266,9 @@ public function homeProducts(Request $request)
     });
 
     return response()->json([
-        'status' => 200,
-		'message' => 'Products retrieved successfully',
-        'data'   => $response
+        'status'  => 200,
+        'message' => 'Products retrieved successfully',
+        'data'    => $response,
     ], 200);
 }
 /**

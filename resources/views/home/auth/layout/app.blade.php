@@ -28,6 +28,15 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <link href="{{ asset('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css') }}"
         rel="stylesheet">
+    
+    <!-- Google reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+    <script>
+        function enableCaptchaSubmit() {
+            // This function will be called when reCAPTCHA is successfully completed
+            console.log('reCAPTCHA completed');
+        }
+    </script>
 
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('public/lib/animate/animate.min.css') }}" rel="stylesheet">

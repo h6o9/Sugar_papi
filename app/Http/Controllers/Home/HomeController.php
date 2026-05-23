@@ -13,6 +13,7 @@ use App\Models\TimeSlot;
 use App\Rules\ReCaptcha;
 use App\Mail\ContactMail;
 use App\Models\MenuGallery;
+use App\Http\Requests\AntiBotFormRequest;
 use Illuminate\Http\Request;
 use App\Models\UserTimeSlotes;
 use Illuminate\Support\Facades\Log;
@@ -163,72 +164,113 @@ public function index()
         return view('home.new-sea-moss', compact('data'));
     }
 
-    public function search(Request $request)
-    {
-        $branches = Branch::all();
-        $timeSlots = TimeSlot::all();
-        $userId = Auth::guard('user')->id();
-        $searchTerm = $request->input('search');
-        $userTimeSlots = UserTimeSlotes::where('user_id', $userId)->first();
+  public function search(Request $request)
+{
+    $branches      = Branch::all();
+    $timeSlots     = TimeSlot::all();
+    $userId        = Auth::guard('user')->id();
+    $searchTerm    = $request->input('search');
+    $userTimeSlots = UserTimeSlotes::where('user_id', $userId)->first();
 
-        // Filtered products matching the search term
-        $filteredProducts = Product::with(['variants', 'category.getCategory'])
-            ->where('status', 1)
-            ->where('name', 'like', "%{$searchTerm}%")
-            ->get();
+    // ✅ FIX: Load ALL relationships needed by calcDiscount() + modal rendering
+    $filteredProducts = Product::with([
+            'variants',
+            'category.getCategory',
+            'complementaryProductSingle.complementary.variants', // ✅ comp product variants too
+        ])
+        ->where('status', 1)
+        ->where('name', 'like', "%{$searchTerm}%")
+        ->get();
 
-        // Get menu categories (for consistent layout)
-        $menuCategories = Menu::with(['products' => function ($query) {
-            $query->where('status', 1);
-        }])->orderBy('id', 'asc')->get();
+    // ✅ FIX: Set default_price, original_price, featured_* on each filtered product
+    foreach ($filteredProducts as $product) {
+        if ($product->variants && $product->variants->count() > 0) {
 
-        // Eager load products with variants for better performance
-        foreach ($menuCategories as $menu) {
-            $menu->product = $menu->products->load('variants');
-            
-            // Set default price for menu products with variants
-            foreach ($menu->product as $product) {
-                if ($product->variants && $product->variants->count() > 0) {
-                    // Try to find 'regular' variant first, otherwise use first variant with price
-                    $regularVariant = $product->variants->where('size', 'regular')->first();
-                    $firstVariantWithPrice = $product->variants->where('price', '>', 0)->first();
-                    
-                    if ($regularVariant && $regularVariant->price > 0) {
-                        $product->default_price = $regularVariant->price;
-                    } elseif ($firstVariantWithPrice) {
-                        $product->default_price = $firstVariantWithPrice->price;
-                    } else {
-                        $product->default_price = $product->variants->first()->price ?? 0;
-                    }
-                } else {
-                    $product->default_price = $product->price ?? 0;
-                }
+            // Pick display variant — prefer 'regular', else first with price > 0
+            $regularVariant        = $product->variants->where('size', 'regular')->first();
+            $firstVariantWithPrice = $product->variants->where('price', '>', 0)->first();
+
+            if ($regularVariant && $regularVariant->price > 0) {
+                $displayVariant = $regularVariant;
+            } elseif ($firstVariantWithPrice) {
+                $displayVariant = $firstVariantWithPrice;
+            } else {
+                $displayVariant = $product->variants->first();
             }
+
+            // ✅ default_price = the display variant's current (discounted) price
+            $product->default_price = $displayVariant ? $displayVariant->price : 0;
+
+            // ✅ original_price for calcDiscount() strikethrough
+            //    variant.original_price = base price before discount
+            if ($displayVariant && isset($displayVariant->original_price) && $displayVariant->original_price > 0) {
+                $product->original_price = $displayVariant->original_price;
+            }
+            // If no variant.original_price, calcDiscount() will compare product.original_price
+            // against product.price — both already on the model from DB
+
+        } else {
+            $product->default_price = $product->price ?? 0;
+            // product.original_price & product.price already loaded from DB
         }
-
-        // Menu galleries for top display
-        $menuGalleries = MenuGallery::orderBy('id', 'DESC')->take(4)->get();
-
-        return view('home.our-menu', compact(
-            'filteredProducts',
-            'branches',
-            'timeSlots',
-            'userTimeSlots',
-            'menuCategories',
-            'menuGalleries',
-            'searchTerm'
-        ));
     }
 
+    // Menu categories (for tabs in the same view)
+    $menuCategories = Menu::with(['products' => function ($query) {
+        $query->where('status', 1);
+    }])->orderBy('id', 'asc')->get();
 
-    public function sendMail(Request $request)
+    foreach ($menuCategories as $menu) {
+        $menu->product = $menu->products->load([
+            'variants',
+            'complementaryProductSingle.complementary',
+        ]);
+
+        foreach ($menu->product as $product) {
+            if ($product->variants && $product->variants->count() > 0) {
+                $regularVariant        = $product->variants->where('size', 'regular')->first();
+                $firstVariantWithPrice = $product->variants->where('price', '>', 0)->first();
+
+                if ($regularVariant && $regularVariant->price > 0) {
+                    $displayVariant = $regularVariant;
+                } elseif ($firstVariantWithPrice) {
+                    $displayVariant = $firstVariantWithPrice;
+                } else {
+                    $displayVariant = $product->variants->first();
+                }
+
+                $product->default_price = $displayVariant ? $displayVariant->price : 0;
+
+                if ($displayVariant && isset($displayVariant->original_price) && $displayVariant->original_price > 0) {
+                    $product->original_price = $displayVariant->original_price;
+                }
+            } else {
+                $product->default_price = $product->price ?? 0;
+            }
+        }
+    }
+
+    $menuGalleries = MenuGallery::orderBy('id', 'DESC')->take(4)->get();
+
+    return view('home.our-menu', compact(
+        'filteredProducts',
+        'branches',
+        'timeSlots',
+        'userTimeSlots',
+        'menuCategories',
+        'menuGalleries',
+        'searchTerm'
+    ));
+}
+
+    public function sendMail(AntiBotFormRequest $request)
     {
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
             'subject' => 'required',
             'message' => 'required',
-            // 'g-recaptcha-response' => 'required',
+            'g-recaptcha-response' => 'required|recaptcha',
         ]);
         // return $request;
         $data = $request->all();

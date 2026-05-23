@@ -2,210 +2,189 @@
 
 namespace App\Http\Controllers\Api;
 
-use DB;
-use Exception;
-use App\Models\Order;
-use App\Models\Branch;
-use App\Models\Reward;
-use App\Models\Topping;
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
-use App\Models\OrderItemToppings;
 use App\Http\Controllers\Controller;
+use App\Services\ApiOrderPlacementService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Stripe\Checkout\Session as StripeSession;
+use Stripe\Stripe;
 
 class PlaceOrderController extends Controller
 {
-    //
+    public function __construct(
+        private ApiOrderPlacementService $orderService
+    ) {}
 
-public function placeOrder(Request $request)
-{
-    try {
+    // ─────────────────────────────────────────────────────────────────────────
+    // POST /api/place-order
+    //
+    // CRITICAL DESIGN:
+    //   We validate EVERYTHING before creating the Stripe session.
+    //   If any check fails → clear error shown to user → NO payment page opened.
+    //   This prevents the scenario: payment succeeds but order cannot be created.
+    //
+    // Flow:
+    //   1. Auth check
+    //   2. Pre-flight validation (cart, products, address, points, minimums)
+    //   3. Only if ALL checks pass → create Stripe session
+    //   4. Return payment URL to the app
+    // ─────────────────────────────────────────────────────────────────────────
+    public function placeOrder(Request $request)
+    {
         $user = auth()->user();
+
         if (!$user) {
             return response()->json([
-                'status' => false,
-                'message' => 'Unauthorized'
+                'status'  => false,
+                'code'    => 'UNAUTHORIZED',
+                'message' => 'You are not logged in. Please log in again and try.',
             ], 401);
         }
 
-        $userId = $user->id;
+        try {
+            // ── STEP 1: Pre-flight validation (BEFORE touching Stripe) ────────
+            // If anything here fails, the user sees a clear error message and
+            // NO Stripe session is created — no money is charged.
+            $validationResult = $this->orderService->validateOrderBeforePayment($user->id, $request);
 
-        DB::beginTransaction();
+            if (!$validationResult['valid']) {
+                Log::warning('PlaceOrder: pre-flight validation failed', [
+                    'user_id' => $user->id,
+                    'code'    => $validationResult['code'],
+                    'message' => $validationResult['message'],
+                ]);
 
-        // 1️⃣ Fetch cart items
-        $cartItems = DB::table('add_to_cart_items')
-            ->where('user_id', $userId)
-            ->get();
-
-        if ($cartItems->isEmpty()) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No items in cart to place order.'
-            ], 400);
-        }
-
-        // 2️⃣ Create Order
-        $order = new Order();
-        $order->code = random_int(10000000, 99999999);
-        $order->user_id = $userId;
-        $order->product_id = $cartItems->first()->product_id;
-        $order->status = 'Pending';
-        $order->payment = 'offline';
-        $order->vehicle_color = $request->vehicle_color ?? null;
-        $order->vehicle_number = $request->vehicle_number ?? null;
-        $order->subtotal = $cartItems->first()->subtotal ?? 0;
-        $order->tax = $cartItems->first()->tax_amount ?? 0;
-        $order->estimated_total = $cartItems->first()->estimated_total ?? 0;
-        $order->total_amount = $cartItems->first()->estimated_total ?? 0;
-        $order->save();
-
-        $orderId = $order->id;
-
-        // 3️⃣ Product Variant
-        $productVariant = DB::table('product_variants')
-            ->where('product_id', $cartItems->first()->product_id)
-            ->first();
-
-        // 4️⃣ Save Order Items + Toppings
-        foreach ($cartItems as $item) {
-
-            $orderItem = new OrderItem();
-            $orderItem->order_id = $orderId;
-            $orderItem->product_id = $item->product_id;
-            $orderItem->product_name = $item->product_name;
-            $orderItem->branch_id = $item->branch_id;
-            $orderItem->quantity = $item->quantity;
-            $orderItem->product_size = $productVariant->size ?? 'Default';
-            $orderItem->product_price = $item->price;
-            $orderItem->tip = $item->tips ?? 0;
-            $orderItem->tax = $item->tax_amount ?? 0;
-            $orderItem->delivery_address = $item->delivery_address;
-            $orderItem->order_type = $item->order_type;
-            $orderItem->sub_total = $item->subtotal ?? 0;
-            $orderItem->save();
-
-            // Save toppings
-            $toppings = DB::table('add_to_cart_item_toppings')
-                ->where('add_to_cart_item_id', $item->id)
-                ->whereNotNull('topping_id')
-                ->get();
-
-            foreach ($toppings as $topping) {
-                $orderItemTopping = new OrderItemToppings();
-                $orderItemTopping->order_item_id = $orderItem->id;
-                $orderItemTopping->category_id = $topping->category_id;
-                $orderItemTopping->topping_id = $topping->topping_id;
-                $orderItemTopping->save();
+                return response()->json([
+                    'status'  => false,
+                    'code'    => $validationResult['code'],
+                    'message' => $validationResult['message'],
+                ], 422);
             }
+
+            // ── STEP 2: All validations passed → initiate Stripe checkout ────
+            return $this->initiateStripeCheckout($request, $user->id, $validationResult['data']);
+
+        } catch (\RuntimeException $e) {
+            Log::warning('PlaceOrder: RuntimeException', [
+                'user_id' => $user->id ?? null,
+                'error'   => $e->getMessage(),
+            ]);
+            return response()->json([
+                'status'  => false,
+                'code'    => 'VALIDATION_ERROR',
+                'message' => $e->getMessage(),
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::error('PlaceOrder: unexpected server error', [
+                'user_id' => $user->id ?? null,
+                'error'   => $e->getMessage(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+            return response()->json([
+                'status'  => false,
+                'code'    => 'SERVER_ERROR',
+                'message' => 'A server error occurred. Please try again in a moment.',
+            ], 500);
         }
+    }
 
-        // 5️⃣ Clear Cart
-        DB::table('add_to_cart_item_toppings')
-            ->whereIn('add_to_cart_item_id', $cartItems->pluck('id'))
-            ->delete();
+    // ─────────────────────────────────────────────────────────────────────────
+    // Private: Create Stripe checkout session
+    // Only called AFTER all pre-flight validations pass.
+    // $preValidatedData is already calculated — no need to recalculate totals.
+    // ─────────────────────────────────────────────────────────────────────────
+    private function initiateStripeCheckout(Request $request, int $userId, array $preValidatedData)
+    {
+        $finalTotal        = max(0, (float) $preValidatedData['estimatedTotal']);
+        $gatewayFee        = round(($finalTotal * 0.025) + 0.25, 2);
+        $finalTotalWithFee = round($finalTotal + $gatewayFee, 2);
 
+        // ── Save points_to_redeem into cart rows for this user ────────────────
+        $pointsToRedeem = (int) $request->input('points_to_redeem', 0);
         DB::table('add_to_cart_items')
             ->where('user_id', $userId)
-            ->delete();
+            ->update(['points_to_redeem' => $pointsToRedeem]);
 
-        DB::commit();
+        // ── Store order context in Stripe metadata ────────────────────────────
+        // Cart items are NOT stored here — on success we re-read from DB.
+        // We DO store the expected_total as a tamper-detection snapshot.
+        $metaOrderType       = (string) ($request->input('order_type',       'delivery'));
+        $metaDeliveryAddress = (string) ($request->input('delivery_address', ''));
+        $metaDeliveryCharges = (string) ($request->input('delivery_charges', '0'));
+        $metaTip             = (string) ($request->input('tip',              '0'));
+        $metaBranchId        = (string) ($request->input('branch_id',        ''));
+        $metaVehicleColor    = (string) ($request->input('vehicle_color',    ''));
+        $metaVehicleNumber   = (string) ($request->input('vehicle_number',   ''));
+        $metaPickupTime      = (string) ($request->input('pickup_time',      ''));
 
-                // ===============================
-        // 🔔 SAVE NOTIFICATION IN DATABASE
-        // ===============================
-        $title = 'Order Placed Successfully!';
-        $description = "Your order #{$order->code} has been placed successfully.";
+        try {
+            Stripe::setApiKey(config('services.stripe.secret'));
 
-        \App\Models\Notification::create([
-            'user_id'     => $userId,
-            'title'       => $title,
-            'description' => $description,
-            'seenByUser'  => 0,
-        ]);
+            $session = StripeSession::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency'     => 'gbp',
+                        'product_data' => ['name' => 'Order Payment'],
+                        'unit_amount'  => $this->orderService->amountToStripePence($finalTotalWithFee),
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'metadata' => [
+                    'user_id'          => (string) $userId,
+                    'gateway_fee'      => (string) $gatewayFee,
+                    'expected_total'   => (string) round($preValidatedData['estimatedTotal'], 2),
+                    'expected_subtotal'=> (string) round($preValidatedData['subtotal'], 2),
+                    'order_type'       => $metaOrderType,
+                    'delivery_address' => $metaDeliveryAddress,
+                    'delivery_charges' => $metaDeliveryCharges,
+                    'tip'              => $metaTip,
+                    'branch_id'        => $metaBranchId,
+                    'vehicle_color'    => $metaVehicleColor,
+                    'vehicle_number'   => $metaVehicleNumber,
+                    'pickup_time'      => $metaPickupTime,
+                ],
+                'success_url' => url('/api/payment/stripe/webview/success?session_id={CHECKOUT_SESSION_ID}'),
+                'cancel_url'  => url('/api/payment/stripe/webview/cancel'),
+            ]);
 
-
-
-        // ===============================
-        // 🔔 DIRECT PUSH NOTIFICATION (WITHOUT JOB)
-        // ===============================
-        if ($user->fcmtoken) {
-            $this->sendDirectNotification(
-                $user->fcmtoken,
-                $title,
-                $description,
-                [
-                    'order_id' => $orderId,
-                    'status'   => 'Pending'
-                ]
-            );
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            Log::error('PlaceOrder: Stripe session creation failed', [
+                'user_id' => $userId,
+                'error'   => $e->getMessage(),
+            ]);
+            return response()->json([
+                'status'  => false,
+                'code'    => 'STRIPE_ERROR',
+                'message' => 'Could not connect to the payment service. Please try again.',
+            ], 502);
         }
 
-	//    send email
-	// 	if (!empty($user->email)) {
-    //     \Mail::to($user->email)->send(
-    //         new \App\Mail\OrderPlacedMail($order->code)
-    //     );
-    // }
-
-        return response()->json([
-            'status'   => true,
-            'message' => 'Order placed successfully!',
-            'order_id'=> $orderId
+        Log::info('PlaceOrder: Stripe session created', [
+            'user_id'    => $userId,
+            'session_id' => $session->id,
+            'amount'     => $finalTotalWithFee,
         ]);
 
-    } catch (\Exception $e) {
-        DB::rollBack();
-
         return response()->json([
-            'status' => false,
-            'message' => $e->getMessage()
-        ], 500);
-    }
-}
-
-
-private function sendDirectNotification($fcmToken, $title, $body, $data = [])
-{
-    try {
-        $SERVER_API_KEY = env('FCM_SERVER_KEY'); // Your FCM Server Key
-        
-        $payload = [
-            'to' => $fcmToken,
-            'notification' => [
-                'title' => $title,
-                'body'  => $body,
-                'sound' => 'default',
-                'badge' => 1
+            'status'              => true,
+            'message'             => 'Complete your payment to place the order.',
+            'payment_required'    => true,
+            'stripe_checkout_url' => $session->url,
+            'payment_url'         => url('/api/payment/stripe/webview/direct?stripe_session_id=' . $session->id),
+            'summary' => [
+                'subtotal'         => round($preValidatedData['subtotal'], 2),
+                'tax'              => round($preValidatedData['totalTax'], 2),
+                'tip'              => round($preValidatedData['tip'], 2),
+                'delivery_charge'  => round($preValidatedData['deliveryCharges'], 2),
+                'points_discount'  => round($preValidatedData['pointsDiscount'], 2),
+                'total_before_fee' => round($finalTotal, 2),
+                'gateway_fee'      => $gatewayFee,
+                'final_total'      => $finalTotalWithFee,
             ],
-            'data' => $data,
-            'priority' => 'high'
-        ];
-        
-        $headers = [
-            'Authorization: key=' . $SERVER_API_KEY,
-            'Content-Type: application/json',
-        ];
-        
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        
-        \Log::info('Direct FCM Response: ', ['response' => $response, 'http_code' => $httpCode]);
-        
-        return $response;
-        
-    } catch (\Exception $e) {
-        \Log::error('Direct FCM Error: ' . $e->getMessage());
-        return false;
+        ]);
     }
-}
-
 }

@@ -10,20 +10,6 @@
                             <h5 class="section-title ff-secondary text-start text-dark fw-normal">Login</h5>
                             <h1 class="text-dark mb-4">Welcome back! Your Sugar Pappi cravings await.</h1>
                             
-                            <!-- Add this div for error messages -->
-                            @if(session('error'))
-                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    {{ session('error') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-                            
-                            @if(session('status'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    {{ session('message') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
                             
                             <form method="POST" action="{{ url('users/login') }}" id="loginForm">
                                 @csrf

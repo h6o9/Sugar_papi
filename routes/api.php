@@ -1,17 +1,18 @@
 <?php
 
+use App\Http\Controllers\Api\ReferralController;
+use App\Http\Controllers\Api\AddToCartController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FcmTokenController;
+use App\Http\Controllers\Api\FilterController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\PageController;
+use App\Http\Controllers\Api\PlaceOrderController;
+use App\Http\Controllers\Api\ProductDetailsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\HomeController;
-use App\Http\Controllers\Api\PageController;
-use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\FilterController;
-use App\Http\Controllers\Api\FcmTokenController;
-use App\Http\Controllers\Api\AddToCartController;
-use App\Http\Controllers\Api\PlaceOrderController;
-use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\ProductDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,7 +83,28 @@ Route::post('/clearnotification', [NotificationController::class, 'clearAll']);
 Route::post('/notifications-seen', [NotificationController::class, 'seenNotification'])
     ->name('notifications.seen');
 
+	// 
+	Route::get('/referral/validate/{code}', [ReferralController::class, 'validateReferralCode']);
+
+// Register new user with referral code
+Route::post('/register-with-referral', [ReferralController::class, 'registerWithReferral']);
+ Route::post('/referral/generate', [ReferralController::class, 'generateLink']);
+    
+    // Get my referral link and points
+    Route::get('/referral/my-link', [ReferralController::class, 'getMyLink']);
+    
+    // Get complete statistics
+    Route::get('/referral/stats', [ReferralController::class, 'getStats']);
+    
+    // Use/redeem points
+    Route::post('/referral/use-points', [ReferralController::class, 'usePoints']);
 // get reward history
 Route::get('/reward-history', [\App\Http\Controllers\Api\RewardHistoryController::class, 'index']);
 
 });
+
+// Webview Payment Routes for App
+Route::get('/payment/stripe/webview/success', [\App\Http\Controllers\Api\PaymentController::class, 'stripeWebviewSuccess'])->name('api.payment.stripe.webview.success');
+Route::get('/payment/stripe/webview/cancel', [\App\Http\Controllers\Api\PaymentController::class, 'stripeWebviewCancel'])->name('api.payment.stripe.webview.cancel');
+// checkout_token from place-order (payment first, then order on success)
+Route::get('/payment/stripe/webview/{checkout_token}', [\App\Http\Controllers\Api\PaymentController::class, 'stripeWebviewCheckout'])->name('api.payment.stripe.webview.checkout');

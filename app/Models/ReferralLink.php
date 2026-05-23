@@ -9,5 +9,6 @@ class ReferralLink extends Model
 {
     use HasFactory;
 protected $table = 'referral_links';
+protected $guarded = [];
 
 }

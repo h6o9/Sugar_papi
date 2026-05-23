@@ -41,6 +41,15 @@
     <link href="{{ asset('public/css/common.css') }}" rel="stylesheet">
     <link href="{{ asset('public/css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('public/admin/assets/toastr/css/toastr.css') }}">
+    
+    <!-- Google reCAPTCHA Script -->
+    <script src="https://www.google.com/recaptcha/api.js?render=explicit" async defer></script>
+    <script>
+        function enableCaptchaSubmit() {
+            // This function will be called when reCAPTCHA is successfully completed
+            console.log('reCAPTCHA completed');
+        }
+    </script>
 </head>
 
 <body>

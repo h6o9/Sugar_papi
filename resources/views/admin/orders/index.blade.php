@@ -113,18 +113,25 @@
                                         </td> --}}
                                         <td>
                                             @php
-                                            $branchLocations = [];
+                                            $displayLocations = [];
                                             @endphp
 
                                             @foreach ($order->orderItem as $orderItem)
                                             @php
-                                            $branchLocation = $orderItem->branch->location;
+                                            $isDelivery = in_array((string) ($orderItem->delivery_status ?? ''), ['2', 'delivery'], true);
+                                            if ($isDelivery && !empty($orderItem->delivery_address)) {
+                                                $locationLabel = $orderItem->delivery_address;
+                                            } else {
+                                                $locationLabel = $orderItem->branch && $orderItem->branch->location
+                                                    ? $orderItem->branch->location
+                                                    : ($orderItem->delivery_address ?: 'N/A');
+                                            }
                                             @endphp
 
-                                            @if (!in_array($branchLocation, $branchLocations))
-                                            {{ $branchLocation }}
+                                            @if (!in_array($locationLabel, $displayLocations))
+                                            {{ $locationLabel }}
                                             @php
-                                            $branchLocations[] = $branchLocation;
+                                            $displayLocations[] = $locationLabel;
                                             @endphp
                                             @endif
                                             @endforeach
@@ -136,7 +143,7 @@
 
                                             @foreach ($order->orderItem as $orderItem)
                                             @php
-                                            $branchName = $orderItem->branch->name;
+                                            $branchName = $orderItem->branch ? $orderItem->branch->name : 'N/A';
                                             @endphp
 
                                             @if (!in_array($branchName, $branchNames))
@@ -223,7 +230,7 @@
 
                                             @foreach ($order->orderItem as $orderItem)
                                             @php
-                                            $branchTax = $orderItem->branch->tax;
+                                            $branchTax = $orderItem->branch ? $orderItem->branch->tax : 0;
                                             @endphp
 
                                             @if (!in_array($branchTax, $branchTaxs))

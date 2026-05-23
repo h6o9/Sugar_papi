@@ -33,6 +33,9 @@ public function addToCart(Request $request)
         $quantity    = (int) ($request->quantity ?? 1);
         $variantId   = $request->variant_id ? (int) $request->variant_id : null;
 
+        // ✅ NEW: complementary product
+        $complementaryId = $request->product_complementary_id ?? null;
+
         // =========================
         // FRONTEND PRICES
         // =========================
@@ -52,6 +55,7 @@ public function addToCart(Request $request)
         $toppingDetails = [];
         if ($request->toppings) {
             $toppingsJson = json_decode($request->toppings, true);
+
             if (!empty($toppingsJson) && is_array($toppingsJson)) {
                 foreach ($toppingsJson as $categoryKey => $toppingsArray) {
                     foreach ($toppingsArray as $item) {
@@ -75,10 +79,21 @@ public function addToCart(Request $request)
             ->get();
 
         $existingCartItem = null;
+
         foreach ($existingItems as $item) {
+
             $existingToppings = AddToCartItemTopping::where('add_to_cart_item_id', $item->id)
-                ->pluck('topping_id')->sort()->values()->toArray();
-            $currentToppings = collect($toppingDetails)->pluck('topping_id')->sort()->values()->toArray();
+                ->pluck('topping_id')
+                ->sort()
+                ->values()
+                ->toArray();
+
+            $currentToppings = collect($toppingDetails)
+                ->pluck('topping_id')
+                ->sort()
+                ->values()
+                ->toArray();
+
             if ($existingToppings === $currentToppings) {
                 $existingCartItem = $item;
                 break;
@@ -86,17 +101,27 @@ public function addToCart(Request $request)
         }
 
         // =========================
-        // EXISTING ITEM
+        // EXISTING ITEM UPDATE
         // =========================
         if ($existingCartItem) {
+
             $existingCartItem->quantity += $quantity;
             $existingCartItem->price += $price;
             $existingCartItem->original_price += $originalPrice;
+
             $existingCartItem->subtotal = $existingCartItem->price;
+            $existingCartItem->estimated_total = $existingCartItem->price + $tips;
+
+            // ✅ FIX: complementary update bhi
+            $existingCartItem->product_complementary_id = $complementaryId;
+
             $existingCartItem->tips = $tips;
             $existingCartItem->save();
+
             $cartItemId = $existingCartItem->id;
+
         } else {
+
             // =========================
             // NEW CART ITEM
             // =========================
@@ -116,11 +141,15 @@ public function addToCart(Request $request)
                 'tips'             => $tips,
                 'original_price'   => $originalPrice,
                 'variant_id'       => $variantId,
+
+                // ✅ IMPORTANT FIX
+                'product_complementary_id' => $complementaryId,
             ]);
 
             $cartItemId = $cartItem->id;
 
             $toppingsInsert = [];
+
             foreach ($toppingDetails as $topping) {
                 $toppingsInsert[] = [
                     'add_to_cart_item_id' => $cartItemId,
@@ -128,18 +157,20 @@ public function addToCart(Request $request)
                     'category_id'         => $topping['category_id'],
                 ];
             }
+
             if (!empty($toppingsInsert)) {
                 AddToCartItemTopping::insert($toppingsInsert);
             }
         }
 
         // =========================
-        // FIX: UPDATE ONLY THE SUBTOTAL AND ESTIMATED TOTAL FOR CURRENT ITEM
-        // NOT ALL ITEMS
+        // FINAL UPDATE (ONLY CURRENT ITEM)
         // =========================
         $cartItemToUpdate = AddToCartItem::find($cartItemId);
+
         $cartItemToUpdate->subtotal = $cartItemToUpdate->price;
         $cartItemToUpdate->estimated_total = $cartItemToUpdate->price + $tips;
+
         $cartItemToUpdate->save();
 
         DB::commit();
@@ -151,7 +182,9 @@ public function addToCart(Request $request)
         ]);
 
     } catch (\Exception $e) {
+
         DB::rollBack();
+
         Log::error('Add to cart error', [
             'error' => $e->getMessage(),
             'request' => $request->all()
@@ -168,59 +201,176 @@ public function addToCart(Request $request)
 
 public function proceedToPayment(Request $request)
 {
-    $userId = auth()->user()->id;
+    try {
+        $userId = auth()->user()->id;
 
-    $cartItems = AddToCartItem::where('user_id', $userId)->get();
+        $cartItems = AddToCartItem::where('user_id', $userId)->get();
 
-    if ($cartItems->isEmpty()) {
+        if ($cartItems->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No items in cart to proceed to payment.'
+            ], 400);
+        }
+
+        // Validate request
+        $request->validate([
+            'tip' => 'nullable|numeric|min:0',
+            'branch_id' => 'required|exists:branches,id',
+            'points_to_redeem' => 'nullable|integer|min:0',
+        ]);
+
+        $tips = $request->tip ?? 0;
+        $branchId = $request->branch_id;
+        $pointsToRedeem = $request->points_to_redeem ?? 0;
+        
+        // =========================
+        // GET BRANCH TAX
+        // =========================
+        $branch = DB::table('branches')->where('id', $branchId)->first();
+        
+        if (!$branch) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Branch not found.'
+            ], 404);
+        }
+        
+        $branchTax = $branch->tax ?? 0; // Branch tax percentage (e.g., 10 for 10%)
+        
+        // =========================
+        // CALCULATIONS
+        // =========================
+        $subtotal = $cartItems->sum('price'); // Discounted price sum
+        $originalPriceSum = $cartItems->sum('original_price'); // Original price sum
+        
+        // Calculate tax based on branch tax percentage
+        $taxAmount = ($subtotal * $branchTax) / 100;
+        
+        $deliveryCharges = 1.5; // Fixed delivery charges
+        
+        $estimatedTotal = $subtotal + $taxAmount + $tips + $deliveryCharges;
+        $originalEstimatedAmount = $originalPriceSum + $taxAmount + $tips + $deliveryCharges;
+        
+        // =========================
+        // POINTS REDEMPTION LOGIC
+        // =========================
+        $pointsDiscount = 0;
+        $finalTotal = $estimatedTotal;
+        $userRewards = null;
+        
+        if ($pointsToRedeem > 0) {
+            // Check if user has enough points
+            $userRewards = DB::table('rewards')
+                ->where('user_id', $userId)
+                ->first();
+            
+            if (!$userRewards || (int) $userRewards->rewards < $pointsToRedeem) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient points. You have ' . ($userRewards->rewards ?? 0) . ' points available.'
+                ], 400);
+            }
+            
+            // Get points price from reward_settings
+            $rewardSetting = DB::table('reward_settings')
+                ->orderBy('id', 'desc')
+                ->first();
+            
+            if (!$rewardSetting) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reward settings not configured.'
+                ], 400);
+            }
+            
+            // Calculate discount: points * price per point
+            $pointsDiscount = $pointsToRedeem * (float) $rewardSetting->price;
+            
+            // Check if discount exceeds estimated total
+            if ($pointsDiscount > $estimatedTotal) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Points discount cannot exceed order total. Maximum discount allowed: ' . number_format($estimatedTotal, 2)
+                ], 400);
+            }
+            
+            // Apply discount
+            $finalTotal = $estimatedTotal - $pointsDiscount;
+        }
+        
+        // =========================
+        // STORE CALCULATIONS IN SESSION/CACHE FOR PLACE ORDER
+        // =========================
+        $paymentData = [
+            'branch_id' => $branchId,
+            'branch_tax' => $branchTax,
+            'tips' => $tips,
+            'delivery_charges' => $deliveryCharges,
+            'subtotal' => $subtotal,
+            'original_price_sum' => $originalPriceSum,
+            'tax_amount' => $taxAmount,
+            'estimated_total' => $estimatedTotal,
+            'points_to_redeem' => $pointsToRedeem,
+            'points_discount' => $pointsDiscount,
+            'final_total' => $finalTotal,
+            'calculated_at' => now()
+        ];
+        
+        // Store in session or cache
+        session(['payment_data_' . $userId => $paymentData]);
+        // OR using cache
+        // Cache::put('payment_data_' . $userId, $paymentData, now()->addMinutes(30));
+        
+        // =========================
+        // UPDATE CART TABLE (optional - store temp values)
+        // =========================
+        foreach ($cartItems as $item) {
+            $item->tips = $tips;
+            $item->branch_id = $branchId;
+            $item->tax_amount = $taxAmount;
+            $item->subtotal = $subtotal;
+            $item->estimated_total = $finalTotal; // Store final total after discount
+            $item->save();
+        }
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Continue to payment',
+            
+            'summary' => [
+                'branch_id' => $branchId,
+                'branch_name' => $branch->name ?? null,
+                'branch_tax_percentage' => $branchTax,
+                
+                'subtotal' => round($subtotal, 2),
+                'original_price_sum' => round($originalPriceSum, 2),
+                'tax_amount' => round($taxAmount, 2),
+                'delivery_charges' => round($deliveryCharges, 2),
+                'tips' => round($tips, 2),
+                
+                'estimated_total_before_discount' => round($estimatedTotal, 2),
+                'points_redeemed' => $pointsToRedeem,
+                'points_discount' => round($pointsDiscount, 2),
+                'final_total' => round($finalTotal, 2),
+                'original_estimated_amount' => round($originalEstimatedAmount, 2),
+                
+                'savings' => round($originalEstimatedAmount - $finalTotal, 2)
+            ]
+        ]);
+        
+    } catch (\Exception $e) {
+        \Log::error('Proceed to payment error', [
+            'error' => $e->getMessage(),
+            'user_id' => auth()->user()->id ?? null
+        ]);
+        
         return response()->json([
             'success' => false,
-            'message' => 'No items in cart to proceed to payment.'
-        ], 400);
+            'message' => 'Something went wrong: ' . $e->getMessage()
+        ], 500);
     }
-
-    $tips = $request->tip ?? 0;
-    $deliveryCharges = 1.5;
-
-    // =========================
-    // CALCULATIONS
-    // =========================
-    $subtotal = $cartItems->sum('price');           // discounted price sum
-    $originalPriceSum = $cartItems->sum('original_price'); // original price sum
-    $tax = $cartItems->first()->tax_amount ?? 0;
-
-    $estimatedTotal = $subtotal + $tax + $tips + $deliveryCharges;
-    $originalEstimatedAmount = $originalPriceSum + $tax + $tips + $deliveryCharges;
-
-    // =========================
-    // UPDATE CART TABLE
-    // =========================
-    foreach ($cartItems as $item) {
-
-        $item->tips = $tips;
-        $item->subtotal = $subtotal;
-        $item->estimated_total = $estimatedTotal;
-
-        $item->save();
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Continue to payment',
-
-        'summary' => [
-            'subtotal' => round($subtotal,2),
-            'original_price_sum' => round($originalPriceSum,2),
-            'tax_amount' => round($tax,2),
-            'delivery_charges' => round($deliveryCharges,2),
-            'tips' => round($tips,2),
-
-            'estimated_total' => round($estimatedTotal,2),
-            'original_estimated_amount' => round($originalEstimatedAmount,2),
-        ]
-    ]);
 }
-
 
 public function getUserCartItems(Request $request)
 {

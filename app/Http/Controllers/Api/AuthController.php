@@ -71,6 +71,9 @@ public function getProfile()
             'name'  => $user->name,
             'email' => $user->email,
 			'image' => $user->image,
+			"address" => $user->address,
+			"postcode" => $user->postcode,
+			"phone" => $user->phone,
         ]
     ]);
 }
@@ -354,78 +357,59 @@ public function socialLogin(Request $request)
 public function updateProfile(Request $request)
 {
     try {
-
         $user = auth()->user();
 
         $request->validate([
             'name' => 'sometimes|string|max:255',
             'phone' => 'sometimes|string|max:20',
+            'postcode' => 'sometimes|string|max:20',
+            'address' => 'sometimes|string|max:500',
+            'password' => 'sometimes|string|min:6|confirmed',
             'profile_picture' => 'sometimes|image|mimes:jpg,jpeg,png|max:2048',
             'email' => 'prohibited',
         ]);
 
+        // Check if phone is being changed and validate uniqueness
         $isPhoneChange = $request->filled('phone') && $request->phone != $user->phone;
-
-        /*
-        |--------------------------------------------------------------------------
-        | CASE 1: PHONE INCLUDED → SEND OTP & SAVE ALL DATA IN OTP TABLE
-        |--------------------------------------------------------------------------
-        */
+        
         if ($isPhoneChange) {
-
-            $otp = rand(1000, 9999);
-
-            // Handle image upload (temporary path)
-            $tempImage = null;
-            if ($request->hasFile('profile_picture')) {
-				$fileName = time() . '.' . $request->profile_picture->extension();
-				$request->profile_picture->move(public_path('admin/assets/images'), $fileName);
-				$tempImage = 'admin/assets/images/' . $fileName; // final path
-			}
-
-			if($request->has('phone')) {
-				$existingUser = User::where('phone', $request->phone)
-					->where('id', '!=', $user->id)
-					->first();
-				if ($existingUser) {
-					return response()->json([
-						'status'  => false,
-						'message' => 'Phone number already in use by another user.'
-					], 409);
-				}
-			}
-
-			$otpToken = Str::uuid();
-					EmailOtp::updateOrCreate(
-				['email' => $user->email],   // 🔥 EMAIL IS THE KEY
-				[
-					'phone'  => $request->phone,
-					'name'       => $request->name ?? $user->name,
-					'image'      => $tempImage,
-					'otp'        => $otp,
-					'access_token' => $otpToken,
-				]
-			);
-
-
-            // SmsService::send($request->phone, "Your OTP is: $otp");
-
-            return response()->json([
-                'status'  => true,
-                'message' => 'OTP sent successfully to your phone number.'
-            ]);
+            $existingUser = User::where('phone', $request->phone)
+                ->where('id', '!=', $user->id)
+                ->first();
+            if ($existingUser) {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Phone number already in use by another user.'
+                ], 409);
+            }
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CASE 2: NO PHONE → DIRECT UPDATE
-        |--------------------------------------------------------------------------
-        */
-
+        // Update name
         if ($request->filled('name')) {
             $user->name = $request->name;
         }
 
+        // Update phone (direct update - NO OTP)
+        if ($request->filled('phone')) {
+            $user->phone = $request->phone;
+        }
+
+        // Update postcode
+        if ($request->filled('postcode')) {
+            $user->postcode = $request->postcode;
+        }
+
+        // Update address
+        if ($request->filled('address')) {
+            $user->address = $request->address;
+        }
+
+        // Update password
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+
+        // Update profile picture
         if ($request->hasFile('profile_picture')) {
             $fileName = time() . '.' . $request->profile_picture->extension();
             $request->profile_picture->move(public_path('admin/assets/images'), $fileName);

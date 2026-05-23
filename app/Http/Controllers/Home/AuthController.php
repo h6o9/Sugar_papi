@@ -9,10 +9,12 @@ use App\Mail\UserRegisterMail;
 use App\Mail\UserResetPassword;
 use App\Models\Reward;
 use App\Models\User;
+use App\Http\Requests\AntiBotFormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -33,30 +35,30 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (auth::guard('user')->attempt($credentials)) {
             if (count(session('cart', [])) > 0) {
-                return redirect()->route('checkout')->with(['status' => true,  'message' => 'Login Successfully']);
+                return redirect()->route('checkout')->with(['status' => true, 'message' => 'Login Successfully']);
             } else {
 
-                return redirect()->route('index')->with(['status' => true,  'message' => 'Login Successfully']);
+                return redirect()->route('index')->with(['status' => true, 'message' => 'Login Successfully']);
             }
         }
-        return back()->with(['status' => true,  'message' => 'Invalid Email or Password']);
+        return back()->with(['status' => true, 'message' => 'Invalid Email or Password']);
     }
     public function getRegistor()
     {
 
         return view('home.auth.register');
     }
-    public function storeUser(Request $request)
+    public function storeUser(AntiBotFormRequest $request)
     {
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            // 'g-recaptcha-response' => 'required',
-			'phone' => 'required|numeric|max:15|unique:users,phone',
-			'address' => 'required|string|max:255',
-			'postcode' => 'required|string|max:10',
+            'g-recaptcha-response' => 'required|recaptcha',
+            'phone' => 'required|numeric|max:15|unique:users,phone',
+            'address' => 'required|string|max:255',
+            'postcode' => 'required|string|max:10',
         ]);
         $user = new User();
         $user->name = $validatedData['name'];
@@ -73,7 +75,7 @@ class AuthController extends Controller
             Mail::to($user->email)->send(new UserConfirmRegistration($data));
             return redirect('/login')->with(['status' => true, 'message' => 'Register Succssfully']);
         } else {
-            return redirect()->back()->with(['status' => true,  'message' => 'Something Went Wrong,Try Again!']);
+            return redirect()->back()->with(['status' => true, 'message' => 'Something Went Wrong,Try Again!']);
         }
     }
     public function getcontact()
@@ -86,53 +88,53 @@ class AuthController extends Controller
         $userId = auth::guard('user')->id();
         $user = User::where('id', $userId)->first();
         $reward = Reward::where('user_id', $user->id)->first();
-        return view('home.my-profile', compact('user','reward'));
+        return view('home.my-profile', compact('user', 'reward'));
     }
 
- public function updateProfile(Request $request, $id)
-{
-    // ✅ Validation
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'phone' => 'nullable|string|max:20',
-        'address' => 'nullable|string|max:255',
-        'postcode' => 'nullable|string|max:20',
-        'password' => 'nullable|confirmed|min:6',
-    ]);
+    public function updateProfile(Request $request, $id)
+    {
+        // ✅ Validation
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'postcode' => 'nullable|string|max:20',
+            'password' => 'nullable|confirmed|min:6',
+        ]);
 
-    // ✅ Find User
-    $user = User::findOrFail($id);
+        // ✅ Find User
+        $user = User::findOrFail($id);
 
-    // ✅ Base Data
-    $data = [
-        'name'     => $request->name,
-        'email'    => $request->email,
-        'phone'    => $request->phone,
-        'address'  => $request->address,
-        'postcode' => $request->postcode,
-    ];
+        // ✅ Base Data
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'postcode' => $request->postcode,
+        ];
 
-    // ✅ Password update only if entered
-    if (!empty($request->password)) {
-        $data['password'] = bcrypt($request->password);
+        // ✅ Password update only if entered
+        if (!empty($request->password)) {
+            $data['password'] = bcrypt($request->password);
+        }
+
+        // ✅ Update
+        $user->update($data);
+
+        return redirect()->back()->with('message', 'Profile updated successfully!');
     }
-
-    // ✅ Update
-    $user->update($data);
-
-    return redirect()->back()->with('message', 'Profile updated successfully!');
-}
     public function forgotPassword()
     {
         return view('home.auth.forgot-password');
     }
-    public function userResetPasswordLink(Request $request)
+    public function userResetPasswordLink(AntiBotFormRequest $request)
     {
 
         $request->validate([
             'email' => 'required|exists:users,email',
-            // 'g-recaptcha-response' => 'required',
+            'g-recaptcha-response' => 'required|recaptcha',
         ]);
         $exists = DB::table('password_resets')->where('email', $request->email)->first();
         if ($exists) {
